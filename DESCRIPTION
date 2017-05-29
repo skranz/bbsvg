@@ -1,0 +1,19 @@
+Package: bbsvg
+Type: Package
+Title: Create svg graphs for typical blackboard figures that illustrate economic models
+Version: 0.1
+Date: 2017-05-27
+Author: Sebastian Kranz
+Maintainer: Sebastian Kranz <sebastian.kranz@uni-ulm.de>
+Description: Create svg graphs for typical blackboard figures that illustrate economic models
+License: GPL >= 2.0
+Depends:
+    dplyr,restorepoint,codeUtils,
+    stringtools, rmdtools,
+    nleqslv,whisker,
+    RColorBrewer,
+    dplyrExtras,
+    symbeqs,
+    latexsvg,
+    digest
+RoxygenNote: 5.0.0
