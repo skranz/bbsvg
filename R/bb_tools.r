@@ -1,3 +1,23 @@
+isoquant.slope = function(U,x,y=NULL, as.character=is.character(U)) {
+  restore.point("isoquant.slope")
+  if (is.character(U)) {
+    U = parse(text=U)
+  }
+  if (is.null(y)) {
+    x = x[1]
+    y = x[2]
+  }
+  dx = D(U,x)
+  dy = D(U,y)
+  
+  dydx = substitute(- (dx) / (dy), list(dx=dx,dy=dy)) 
+  
+  if (as.character) (
+    return(deparse1(dydx))
+  )
+  dydx
+}
+
 linetype.to.dasharry = function(linetype) {
   if (linetype=="dashed") return("4,4")
   if (linetype=="dotted") return("2,4")
@@ -6,6 +26,11 @@ linetype.to.dasharry = function(linetype) {
   if (linetype=="twodash") return("4,1,4,4")
   return(NULL)
 }
+
+round.to.grid = function(val, step=(end-start)/(length-1), start=range[1], end=range[2], length=101, range=c(0,NA)) {
+  round( (val-start) / step)*step + start 
+}
+
 
 first.non.null = function(...) {
   args = list(...)

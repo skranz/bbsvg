@@ -1,5 +1,28 @@
+bb_isoquant = function(bb, Q,x,y,...,id=paste0("isoquant_",random.string()),xvar=bb$xvar,yvar=bb$yvar) {
+  restore.point("bb_isoquant")
+  slope = isoquant.slope(Q,xvar,yvar)
+  bb_slopecurve(bb,x=x,y=y,slope=slope,xvar=xvar,yvar=yvar,...)
+}
 
-bb_curve = function(bb,id=random.string(),eq,latex=NULL, label=NULL, data=NULL,color="black", width=NULL, style=nlist(stroke=color, stroke_width=width,...), var.funs=NULL,labpos=NULL,labx=NULL, laby=NULL,tooltip=NULL,dy=NULL,dx=NULL,...) {
+bb_slopecurve = function(bb,x,y,slope,color=NULL, lwd=NULL, style=nlist(stroke=color, stroke_width=lwd,...), var.funs=NULL,tooltip=NULL,..., data=NULL, id=paste0("slopecurve_",random.string()),xvar=bb$xvar,yvar=bb$yvar) {
+  restore.point("bb_slopecurve")
+  
+  if (is.character(slope)) {
+    slope_ = parse.as.call(text=slope)
+  } else {
+    slope_ = slope
+    slope = deparse1(slope_)
+  }
+  
+  obj = nlist(type="slopecurve",id,x,y,slope,slope_,data,style, tooltip,xvar,yvar, eval.fields=c("x","y"))
+  
+  bb$objs[[obj$id]] = obj
+  bb
+}
+
+
+
+bb_curve = function(bb,id=random.string(),eq,latex=NULL, label=NULL, data=NULL,color=NULL, lwd=NULL, style=nlist(stroke=color, stroke_width=lwd,...), var.funs=NULL,labpos=NULL,labx=NULL, laby=NULL,tooltip=NULL,dy=NULL,dx=NULL,...) {
   restore.point("bb_curve")
   
   curve = nlist(type="curve",id,eq,data,style,label,latex, tooltip,dx,dy)
@@ -210,6 +233,11 @@ compute.curve.implicit.z = function(cu, xrange, yrange,par,  xlen=101,ylen=xlen,
   grid
 }
 
+draw.svg.slopecurve = function(...) {
+  restore.point("draw.svg.slopecurve")
+  draw.svg.curve(...)
+}
+
 
 draw.svg.curve = function(svg,obj,level=first.non.null(obj$level,10), display=NULL) {
   restore.point("draw.svg.curve")
@@ -218,3 +246,50 @@ draw.svg.curve = function(svg,obj,level=first.non.null(obj$level,10), display=NU
   
   svg_polyline(svg, id=obj$id, x=geom$x,y=geom$y, style=obj$style, level=level, tooltip=geom$tooltip,class = "curve", display=display)
 }
+
+# compute.curve.gcurve
+bb_compute_slopecurve = function(bb,obj, ...) {
+  restore.point("bb_compute_curve")
+
+  
+  xy = compute_bb_fields(bb=bb, obj=obj,fields=c("x","y"))  #geom$x = round.to.grid(geom$x,)
+  x = xy$x
+  y = xy$y
+  
+  li = list(x,y)
+  xvar = obj$xvar
+  yar = obj$yvar
+  names(li) = c(xvar,yvar)
+  values = c(li, obj.values(obj,bb))
+  
+  slope_ = obj$slope_
+  
+  dx = diff(bb$xrange) / bb$xlen
+  nl = floor((x-bb$xrange[1]) / dx)
+  nr = floor((bb$xrange[2]-x) / dx)
+  xvec = unique(c(seq(x-nl*dx,x,by=dx),seq(x,x+nr*dx,by=dx)))
+  
+  #xvec = unique(sort(c(seq(bb$xrange[1],bb$xrange[2],length.out = bb$xlen),x)))
+
+  
+  ind = which(xvec==x)
+  yvec = slope = rep(0, length(xvec))
+  yvec[ind] = y
+  slope[ind] = eval(slope_, values) 
+  for (i in rev(seq_len(ind-1))) {
+    yvec[i] = yvec[i+1]-slope[i+1]*dx
+    values[[xvar]] = xvec[i]
+    values[[yvar]] = yvec[i]
+    slope[i] = eval(slope_, values) 
+  }
+  for (j in seq_len(length(xvec)-ind)) {
+    i = j+ind
+    yvec[i] = yvec[i-1]+slope[i-1]*dx
+    values[[xvar]] = xvec[i]
+    values[[yvar]] = yvec[i]
+    slope[i] = eval(slope_, values) 
+  }
+  obj$geom = list(x=xvec, y=yvec, slope=slope)
+  obj
+}
+

@@ -1,4 +1,4 @@
-bb_pane = function(bb=NULL, id=NULL,  data=NULL, xvar=xy[1], yvar=xy[2], xy=c("x_","y_"), xrange=NULL, yrange=NULL, show.ticks=FALSE, arrow.axis=NULL, xlen=201,ylen=201, org.width = 420, org.height=300, margins=NULL,  show=".all", hide=NULL, init.data=FALSE, dataenv=parent.frame(), css=bb_svg_css(), values = data[data.row,,drop=FALSE], data.row = 1, enclos=parent.frame(), scale=1,... ) {
+bb_pane = function(bb=NULL, id=NULL,  data=NULL, xvar=xy[1], yvar=xy[2], xy=c("x_","y_"), xrange=NULL, yrange=NULL, show.ticks=FALSE, arrow.axis=NULL, xlen=201,ylen=201, org.width = 420, org.height=300, margins=NULL,  show=".all", hide=NULL, init.data=FALSE, dataenv=parent.frame(), css=bb_svg_css(), values = ifelse(is.data.frame(data), data[data.row,,drop=FALSE],data), data.row = 1, enclos=parent.frame(), scale=1,... ) {
   restore.point("bb_pane")
   
   bb = first.non.null(bb, list())
@@ -177,6 +177,8 @@ bb_compute_obj = function(bb,obj) {
   
   if (obj$type == "curve") {
     obj = bb_compute_curve(bb, obj)
+  } else if (obj$type == "slopecurve") {
+    obj = bb_compute_slopecurve(bb, obj)
   } else {
     obj$geom = compute_bb_fields(obj=obj, fields=obj$eval.fields,bb=bb)
   }
