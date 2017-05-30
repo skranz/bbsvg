@@ -144,7 +144,7 @@ bb_area = function(bb, x,y, fill="#ffff33", alpha=0.3,stroke="none", style=nlist
 }
 
 
-bb_point = function(bb, x=xy[1],y=xy[2],r=4, xy=NULL, alpha=NULL,color=fill, fill=NULL, class="point", style=list(stroke=color, "fill-color"=fill, "stroke-opacity"=alpha, "fill-opacity"=alpha,...), ..., id=paste0("point_",random.string())) {
+bb_point = function(bb, x,y,r=4, alpha=NULL,color=fill, fill=NULL, class="point", style=list(stroke=color, "fill-color"=fill, "stroke-opacity"=alpha, "fill-opacity"=alpha,...), ..., id=paste0("point_",random.string())) {
   restore.point("bb_point")
   obj = nlist(id, type="point", class, x,y,r, style, eval.fields=c("x","y","r"))
   bb_object(bb, obj)
@@ -166,9 +166,10 @@ bb_data = function(bb, data) {
   bb
 }
 
-bb_var = function(bb, ...) {
-  vars = list(...)
-  bb$values[names(vars)] = vars
+bb_var = function(bb, ..., id=paste0("var_", random.string())) {
+  restore.point("bb_var")
+  obj = list(id=id,type="var", var=list(...), no.draw=TRUE)
+  bb$objs[[id]] = obj
   bb
 }
 

@@ -62,6 +62,8 @@ draw.svg.obj = function(svg,obj,display=NULL,...) {
   } else if (obj$type=="point") {
     draw.svg.point(svg,obj, display=display)
   } else {
+    
+    if (isTRUE(obj[["no.draw"]])) return(svg)
     restore.point("draw.svg.type")
     fun = paste0("draw.svg.",obj$type)
     do.call(fun, list(svg=svg, obj, display=display))

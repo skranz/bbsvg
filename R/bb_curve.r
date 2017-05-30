@@ -258,7 +258,7 @@ bb_compute_slopecurve = function(bb,obj, ...) {
   
   li = list(x,y)
   xvar = obj$xvar
-  yar = obj$yvar
+  yvar = obj$yvar
   names(li) = c(xvar,yvar)
   values = c(li, obj.values(obj,bb))
   

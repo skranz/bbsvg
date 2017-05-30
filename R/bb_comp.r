@@ -1,21 +1,30 @@
 
 bb_compute_objs = function(bb) {
+  restore.point("bb_compute_objs")
   bb$values = bb$data
   # later object may use computations from earlier ones
   for (i in seq_along(bb$objs)) {
-    bb$objs[[i]]=bb_compute_obj(bb=bb,obj=bb$objs[[i]])
+    bb=bb_compute_obj(bb=bb,obj=bb$objs[[i]],i=i)
   }
   bb
 }
 
-bb_compute_obj = function(bb,obj) {
+bb_compute_obj = function(bb,obj,i) {
   restore.point("bb_compute_obj")
   ..bb..env$bb=bb
-  
+  object.ind = i
   if (obj$type == "curve") {
     obj = bb_compute_curve(bb, obj)
   } else if (obj$type == "slopecurve") {
     obj = bb_compute_slopecurve(bb, obj)
+  } else if (obj$type == "var") {
+    #stop("compute.var")
+    for (i in seq_along(obj$var)) {
+      var = names(obj$var)[i]
+      bb$values[[var]] = compute_bb_field(obj$var[[i]], values=bb$values, enclos=bb$enclos)
+      ..bb..env$bb=bb
+    }
+    return(bb)
   } else {
     obj$geom = compute_bb_fields(obj=obj, fields=obj$eval.fields,bb=bb)
     if (obj$type == "segment") {
@@ -33,8 +42,8 @@ bb_compute_obj = function(bb,obj) {
     for (field in yfields) 
       obj$geom[[field]] = obj$geom[[field]]+obj$dy
   }
-  
-  obj
+  bb$objs[[object.ind]]=obj
+  bb
 }
 
 
@@ -67,7 +76,7 @@ obj.values = function(obj, bb) {
 }
 
 compute_bb_fields = function(obj, fields, values=obj.values(obj,bb), enclos=bb$enclos, bb=NULL){
-  
+  restore.point("compute_bb_fields")
   li = lapply(obj[fields], function(field) {
     compute_bb_field(field, values=values, enclos=enclos)
   })
@@ -79,6 +88,13 @@ compute_bb_field = function(field, values=obj.values(obj,bb), enclos=bb$enclos, 
   if(is.null(enclos)) enclos = parent.frame()
   if (is.null(field)) return(NULL)
   if (is.numeric(field)) return(field)
+  
+  if (is(field,"formula")) {
+    if (length(field)==1) return(NULL)
+    call = field[[2]]
+    return(eval(call, values,enclos = enclos))
+  }
+  
   if (is.character(field)) {
     if (length(field)>1) {
       res = sapply(field, function(f) {
