@@ -1,7 +1,7 @@
 bb_isoquant = function(bb, Q,x,y,...,id=paste0("isoquant_",random.string()),xvar=bb$xvar,yvar=bb$yvar) {
   restore.point("bb_isoquant")
   slope = isoquant.slope(Q,xvar,yvar)
-  bb_slopecurve(bb,x=x,y=y,slope=slope,xvar=xvar,yvar=yvar,...)
+  bb_slopecurve(bb,x=x,y=y,slope=slope,xvar=xvar,yvar=yvar,id=id,...)
 }
 
 bb_slopecurve = function(bb,x,y,slope,color=NULL, lwd=NULL, style=nlist(stroke=color, stroke_width=lwd,...), var.funs=NULL,tooltip=NULL,..., data=NULL, id=paste0("slopecurve_",random.string()),xvar=bb$xvar,yvar=bb$yvar) {
