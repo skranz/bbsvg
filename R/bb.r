@@ -1,6 +1,6 @@
 ..bb..env = new.env()
 
-bb_pane = function(bb=NULL, id=NULL,  data=NULL, xvar=xy[1], yvar=xy[2], xy=c("x_","y_"), xrange=NULL, yrange=NULL, show.ticks=FALSE, arrow.axis=NULL, xlen=201,ylen=201, org.width = 420, org.height=300, margins=NULL,  show=".all", hide=NULL, init.data=FALSE, dataenv=parent.frame(), css=bb_svg_css(), values = ifelse(is.data.frame(data), data[data.row,,drop=FALSE],data), data.row = 1, enclos=parent.frame(), scale=1,... ) {
+bb_pane = function(bb=NULL, id=NULL,  data=NULL, xvar=xy[1], yvar=xy[2], xy=c("x_","y_"), xrange=NULL, yrange=NULL, show.ticks=FALSE, arrow.axis=NULL, xlen=201,ylen=201, org.width = 420, org.height=300, margins=NULL,  show=".all", hide=NULL, init.data=FALSE, dataenv=parent.frame(), css=bb_svg_css(), values = ifelse(!is.null(data), data[data.row,,drop=FALSE],list()), data.row = 1, enclos=parent.frame(), scale=1,... ) {
   restore.point("bb_pane")
   
   bb = first.non.null(bb, list())

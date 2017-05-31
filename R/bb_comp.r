@@ -1,7 +1,6 @@
 
 bb_compute_objs = function(bb) {
   restore.point("bb_compute_objs")
-  bb$values = bb$data
   # later object may use computations from earlier ones
   for (i in seq_along(bb$objs)) {
     bb=bb_compute_obj(bb=bb,obj=bb$objs[[i]],i=i)
@@ -72,6 +71,11 @@ init.object.extras = function(obj) {
 
 obj.values = function(obj, bb) {
   if (!is.null(obj[["values"]])) return(obj$values)
+  if (!is.null(obj[["data.row"]])) {
+    if (!is.null(obj$data)) return(obj$data[obj$data.row,])
+    if (!is.null(bb$data)) return(bb$data[obj$data.row,])
+    
+  }
   bb$values
 }
 
