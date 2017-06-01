@@ -87,7 +87,7 @@ compute_bb_fields = function(obj, fields, values=obj.values(obj,bb), enclos=bb$e
   li
 }
 
-compute_bb_field = function(field, values=obj.values(obj,bb), enclos=bb$enclos, bb=NULL, obj=NULL) {
+compute_bb_field = function(field, values=obj.values(obj,bb), enclos=bb$enclos, bb=NULL, obj=NULL, character.field=FALSE) {
   restore.point("compute_bb_field")
   if(is.null(enclos)) enclos = parent.frame()
   if (is.null(field)) return(NULL)
@@ -98,8 +98,13 @@ compute_bb_field = function(field, values=obj.values(obj,bb), enclos=bb$enclos, 
     call = field[[2]]
     return(eval(call, values,enclos = enclos))
   }
+  if (is(field,"call") | is(field,"name") | is(field,"expression")) {
+    return(eval(field, values,enclos = enclos))
+  }
   
-  if (is.character(field)) {
+  
+  
+  if (is.character(field) & !character.field) {
     if (length(field)>1) {
       res = sapply(field, function(f) {
         call = parse.as.call(f)
@@ -110,5 +115,5 @@ compute_bb_field = function(field, values=obj.values(obj,bb), enclos=bb$enclos, 
     call = parse.as.call(field)
     return(eval(call, values,enclos = enclos))
   }
-  
+  return(field)
 }

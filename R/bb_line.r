@@ -25,8 +25,24 @@ bb_tangent = function(bb, x=NULL,y=NULL, slope=NULL, width=NULL, alpha=NULL,colo
 
 bb_segment = function(bb, x1=x,x2=x1,y1=y,y2=y1,x,y, alpha=NULL,color=NULL, class="segment",linetype="solid", lwd=NULL, dasharray = linetype.to.dasharry(linetype),  style=list(stroke=color, "stroke-opacity"=alpha, "stroke-width"=lwd,...), ..., id=paste0("segment_",random.string())) {
   restore.point("bb_segment")
-  obj = nlist(id, type="segment", class, x1,y1,x2,y2, style,"stroke-dasharray"=dasharray, eval.fields=c("x1","y1","x2", "y2"))
-  bb_object(bb, obj)
+
+  ma = bb.normalize.multi.arguments(nlist(x1,x2,y1,y2))
+  
+
+  
+  if (ma$len == 1) {
+     obj = nlist(id, type="segment", class=class, x1=x1,y1=y1,x2=x2,y2=y2, style,"stroke-dasharray"=dasharray, eval.fields=c("x1","y1","x2", "y2"))
+    return(bb_object(bb, obj))
+  }
+  restore.point("bb_segment.multi")
+
+  bid = id
+  for (i in seq_len(ma$len)) {
+    id = paste0(bid,"_",i)
+    bb = bb_segment(bb,id=id, x1=ma$li$x1[[i]],x2=ma$li$x2[[i]],y1=ma$li$y1[[i]],y2=ma$li$y2[[i]], style=style, font_size=font_size, alpha=alpha, color=color, dasharray=dasharray,linetype=linetype, lwd=lwd, ...)
+
+  }
+  bb
 }
 
 
@@ -49,10 +65,21 @@ crop.segment.to.range = function(x=c(x1,x2),y=c(y1,y2),xrange,yrange,x1,x2,y1,y2
   x.inv = x[2]<x[1]
   y.inv = y[2]<y[1]
 
+  horizontal = y[1] == y[2]
+  vertical = x[1] == x[2]
   ox = x; oy = y;
   
+  if (horizontal) {
+    x[1] = min(xrange[2],max(xrange[1],x[1]))
+    x[2] = min(xrange[2],max(xrange[1],x[2]))
+    
+  } else if (vertical) {
+    y[1] = min(yrange[2],max(yrange[1],y[1]))
+    y[2] = min(yrange[2],max(yrange[1],y[2]))
+    
+
   # downward sloping curve
-  if (!x.inv & y.inv) {
+  } else if (!x.inv & y.inv) {
     xr.alpha = (xrange-x[1]) / diff(x)
     yr.alpha = (rev(yrange)-y[1]) / diff(y)
     

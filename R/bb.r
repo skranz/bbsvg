@@ -109,7 +109,7 @@ bb_yaxis = function(bb,
   bb
 }
 
-bb_xmarker = function(bb,x=NULL,y2=y,y=NULL,...,linetype="dashed",label=NULL,latex=NULL, align="center", y.offset=-20, id = random.string()) {
+bb_xmarker = function(bb,x=NULL,y2=y,y=NULL,...,linetype="dashed",label=x,latex=NULL, align="center", y.offset=-20, id = random.string()) {
   restore.point("bb_xmarker")
   y1=bb$y0
   y2=first.non.null(y2,max(bb$yrange))
@@ -119,7 +119,7 @@ bb_xmarker = function(bb,x=NULL,y2=y,y=NULL,...,linetype="dashed",label=NULL,lat
 }
 
 
-bb_ymarker = function(bb,y=NULL,x2=x,x=NULL,...,linetype="dashed",label=NULL,latex=NULL, align="right", id = random.string()) {
+bb_ymarker = function(bb,y=NULL,x2=x,x=NULL,...,linetype="dashed",label=y,latex=NULL, align="right", id = random.string()) {
   restore.point("bb_ymarker")
   x1=bb$y0
   x2=first.non.null(x2,max(bb$xrange))
