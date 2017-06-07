@@ -239,7 +239,7 @@ draw.svg.slopecurve = function(...) {
 }
 
 
-draw.svg.curve = function(svg,obj,level=first.non.null(obj$level,10), display=NULL) {
+draw.svg.curve = function(svg,obj,level=first.non.null(obj$level,0), display=NULL) {
   restore.point("draw.svg.curve")
   display = init.geom.display(obj, display)
   geom=obj$geom

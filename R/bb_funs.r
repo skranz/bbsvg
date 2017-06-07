@@ -17,6 +17,14 @@ xy_at_slope = function(id, slope, bb=cur.bb()) {
   var_at_posvar(id,slope,c("x","y"),"slope", bb)
 }
 
+x_at_y = function(id, y, bb=cur.bb()) {
+  var_at_posvar(id,y,"x","y", bb)
+}
+
+y_at_x = function(id, x, bb=cur.bb()) {
+  var_at_posvar(id,x,"y","x", bb)
+}
+
 
 x_at_slope = function(id, slope, bb=cur.bb()) {
   var_at_posvar(id,slope,"x","slope", bb)
@@ -33,6 +41,8 @@ slope_at_x = function(id, slope, bb=cur.bb()) {
 slope_at_y = function(id, slope, bb=cur.bb()) {
   var_at_posvar(id,slope,"slope","y", bb)
 }
+
+
 
 closest.index = function(vec, val) {
   e2 = abs(vec-val)

@@ -75,7 +75,7 @@ color.pals = function() {
   )
 }
 
-curve.color = function(base="blue",level=1,color=NULL) {
+curve.color = function(base="blue",level=0,color=NULL) {
   restore.point("curve.color")
   
   if (!is.null(color))

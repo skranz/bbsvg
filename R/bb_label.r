@@ -4,6 +4,8 @@ bb_text = function(bb, label=NULL,latex=NULL,x=NULL,y=NULL,xrel=NULL, yrel=NULL,
   use.latex = !is.null(latex)
   bb$use.latex = isTRUE(bb$use.latex) | use.latex
 
+  if (use.latex) label = NULL
+  
   if (is.null(y.offset)) {
     if (valign =="center") {
       y.offset = -ceiling(0.4*font_size)
@@ -68,6 +70,7 @@ compute_bb_label = function(bb, obj) {
 
 
   geom$label = first.non.null(obj$label, obj$latex)
+  
   geom$label = compute_bb_field(geom$label,bb=bb, obj=obj, character.field = TRUE)
 
   geom$tooltip = obj$tooltip
