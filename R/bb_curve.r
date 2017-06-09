@@ -4,7 +4,7 @@ bb_isoquant = function(bb, Q,x,y,...,id=paste0("isoquant_",random.string()),xvar
   bb_slopecurve(bb,x=x,y=y,slope=slope,xvar=xvar,yvar=yvar,id=id,...)
 }
 
-bb_slopecurve = function(bb,x,y,slope,color=NULL, lwd=NULL, style=nlist(stroke=color, stroke_width=lwd,...), var.funs=NULL,tooltip=NULL,..., data=NULL, id=paste0("slopecurve_",random.string()),xvar=bb$xvar,yvar=bb$yvar) {
+bb_slopecurve = function(bb,x,y,slope,color=NULL, lwd=NULL, style=nlist(stroke=color, stroke_width=lwd,...), x.move=0, y.move=0, xrange=bb$xrange, yrange=bb$yrange, var.funs=NULL,tooltip=NULL,..., data=NULL, id=paste0("slopecurve_",random.string()),xvar=bb$xvar,yvar=bb$yvar) {
   restore.point("bb_slopecurve")
   
   if (is.character(slope)) {
@@ -14,7 +14,7 @@ bb_slopecurve = function(bb,x,y,slope,color=NULL, lwd=NULL, style=nlist(stroke=c
     slope = deparse1(slope_)
   }
   
-  obj = nlist(type="slopecurve",id,x,y,slope,slope_,data,style, tooltip,xvar,yvar, eval.fields=c("x","y"))
+  obj = nlist(type="slopecurve",id,x,y,slope,slope_,data,style, tooltip,xvar,yvar, eval.fields=c("x","y"), x.move, y.move,xrange,yrange)
   
   bb$objs[[obj$id]] = obj
   bb
@@ -264,12 +264,12 @@ bb_compute_slopecurve = function(bb,obj, ...) {
   
   slope_ = obj$slope_
   
-  dx = diff(bb$xrange) / bb$xlen
-  nl = floor((x-bb$xrange[1]) / dx)
-  nr = floor((bb$xrange[2]-x) / dx)
+  dx = diff(obj$xrange) / bb$xlen
+  nl = floor((x-obj$xrange[1]) / dx)
+  nr = floor((obj$xrange[2]-x) / dx)
   xvec = unique(c(seq(x-nl*dx,x,by=dx),seq(x,x+nr*dx,by=dx)))
   
-  #xvec = unique(sort(c(seq(bb$xrange[1],bb$xrange[2],length.out = bb$xlen),x)))
+  #xvec = unique(sort(c(seq(obj$xrange[1],obj$xrange[2],length.out = bb$xlen),x)))
 
   
   ind = which(xvec==x)
@@ -289,6 +289,20 @@ bb_compute_slopecurve = function(bb,obj, ...) {
     values[[yvar]] = yvec[i]
     slope[i] = eval(slope_, values) 
   }
+  
+  xvec = xvec+obj$x.move
+  yvec = yvec+obj$y.move
+  
+  # crop curve to range
+  ok = which(yvec >= obj$yrange[1] & yvec <= obj$yrange[2] & xvec >= obj$xrange[1] & xvec <= obj$xrange[2])
+  start.ind = min(ok)
+  end.ind = max(ok)
+  
+  xvec = xvec[start.ind:end.ind]
+  yvec = yvec[start.ind:end.ind]
+  slope = slope[start.ind:end.ind]
+  
+  
   obj$geom = list(x=xvec, y=yvec, slope=slope)
   obj
 }

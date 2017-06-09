@@ -34,8 +34,9 @@ bb_to_svg = function(bb, id = first.non.null(bb$id, random.string()), css=bb$css
   if (latexsvg)
     ssvg = latexsvg::latexsvg(ssvg)
   
+  Encoding(ssvg) = "UTF-8"
   if (!is.null(outfile)) {
-    writeLines(ssvg, outfile)
+    writeLines(ssvg, outfile,useBytes = TRUE)
   }
   invisible(ssvg)
 }

@@ -1,5 +1,5 @@
 
-bb_text = function(bb, label=NULL,latex=NULL,x=NULL,y=NULL,xrel=NULL, yrel=NULL,align="center", x.offset=0, y.offset=NULL, boxed=FALSE, font_size=14, color=NULL, style=list("font-size"=font_size,"fill"=color,"stroke"=color),valign=c("center","bottom","top")[1],  ..., id=random.string()) {
+bb_text = function(bb, label=NULL,latex=NULL,x=NULL,y=NULL,xrel=NULL, yrel=NULL,align="center", x.offset=0, y.offset=NULL, boxed=FALSE, font_size=14, color=NULL, style=list("font-size"=font_size,"fill"=color),valign=c("center","bottom","top")[1],  ..., id=random.string()) {
   restore.point("bb_text")
   use.latex = !is.null(latex)
   bb$use.latex = isTRUE(bb$use.latex) | use.latex
