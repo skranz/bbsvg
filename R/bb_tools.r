@@ -56,3 +56,37 @@ copy.non.null.fields = function(dest=NULL, source, fields=names(source)) {
 
   invisible(dest)
 }
+
+
+is.false = function(val) {
+  if (length(val)==0)
+    return(FALSE)
+  val[is.na(val)] = TRUE  
+  return(!val)
+}
+
+random.string = function(n=1,nchar=14, set=c(letters,LETTERS,0:9)) {
+  chars = sample(set,nchar*n, replace = TRUE)
+  if (n == 1) return(paste0(chars, collapse=""))
+  mat = as.data.frame(matrix(chars, n, nchar))
+  do.call(paste0,mat)
+}
+
+copy.into.null.fields = function(dest, source) {
+  restore.point("copy.into.fields")
+  
+  snames = names(source)
+  dest.val = dest[snames]
+  dest.null = sapply(dest.val, is.null)
+  
+  dest[snames[dest.null]] = source[dest.null]
+  dest
+}
+
+
+
+deparse1 = function (call, collapse = "") 
+{
+    paste0(deparse(call, width = 500), collapse = collapse)
+}
+

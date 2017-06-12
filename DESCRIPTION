@@ -10,10 +10,9 @@ License: GPL >= 2.0
 Depends:
     dplyr,restorepoint,codeUtils,
     stringtools, rmdtools,
-    nleqslv,whisker,
+    whisker,
     RColorBrewer,
     dplyrExtras,
-    symbeqs,
     latexsvg,
     digest
 RoxygenNote: 5.0.0
