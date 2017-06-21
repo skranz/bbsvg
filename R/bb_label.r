@@ -1,5 +1,5 @@
 
-bb_text = function(bb, label=NULL,latex=NULL,x=NULL,y=NULL,xrel=NULL, yrel=NULL,align="center", x.offset=0, y.offset=NULL, boxed=FALSE, font_size=14, color=NULL, style=list("font-size"=font_size,"fill"=color),valign=c("center","bottom","top")[1],  ..., id=random.string()) {
+bb_text = function(bb, label=NULL,latex=NULL,x=NULL,y=NULL,xrel=NULL, yrel=NULL,align="center", x.offset=0, y.offset=NULL, boxed=FALSE, font_size=14, color=NULL, style=list("font-size"=font_size,"fill"=color),valign=c("center","bottom","top")[1], vertical=FALSE,  ..., id=random.string()) {
   restore.point("bb_text")
   use.latex = !is.null(latex)
   bb$use.latex = isTRUE(bb$use.latex) | use.latex
@@ -20,7 +20,7 @@ bb_text = function(bb, label=NULL,latex=NULL,x=NULL,y=NULL,xrel=NULL, yrel=NULL,
   ma = bb.normalize.multi.arguments(nlist(x,y,label,latex))
   
   if (ma$len == 1) {
-    obj = nlist(id, label, latex, x,y,xrel,yrel, use.latex,align,label.mode=ifelse(use.latex,"latex","text"), x.offset, y.offset, boxed,style, font_size, ...)
+    obj = nlist(id, label, latex, x,y,xrel,yrel, use.latex,align,label.mode=ifelse(use.latex,"latex","text"), x.offset, y.offset, boxed,style, font_size,vertical=vertical, ...)
     bb$labels[[id]] = obj
     return(bb)
   }
@@ -29,13 +29,14 @@ bb_text = function(bb, label=NULL,latex=NULL,x=NULL,y=NULL,xrel=NULL, yrel=NULL,
   bid = id
   for (i in seq_len(ma$len)) {
     id = paste0(bid,"_",i)
-    bb = bb_text(bb,id=id, label=ma$li$label[[i]], latex =ma$li$latex[[i]], x=ma$li$x[[i]],y=ma$li$y[[i]], use.latex=use.latex,align=align, x.offset=x.offset, y.offset=y.offset, boxed=boxed,style=style, font_size=font_size, ...)
+    bb = bb_text(bb,id=id, label=ma$li$label[[i]], latex =ma$li$latex[[i]], x=ma$li$x[[i]],y=ma$li$y[[i]], use.latex=use.latex,align=align, x.offset=x.offset, y.offset=y.offset, boxed=boxed,style=style, font_size=font_size, rotate=rotate, ...)
 
   }
   bb
   
   
 }
+
 
 bb_xtick = function(bb,x=NULL,...,label=x,latex=NULL, align="center", y.offset=-20,y=NULL, id = random.string()) {
   restore.point("bb_xtick")
@@ -49,7 +50,7 @@ bb_xtick = function(bb,x=NULL,...,label=x,latex=NULL, align="center", y.offset=-
 
 bb_ytick = function(bb,y=NULL,...,label=y,latex=NULL, align="right", x.offset=-5, x=NULL, id = random.string()) {
   restore.point("bb.ytick")
-  x=first.non.null(x,bb$x0)
+  x=first.non.null(x,bb$x.min)
   #bb = bb_text(bb,x=x,y=y,latex=latex,label=label, align=align, x.offset=x.offset,id=id)
 
   bb = bb_text(bb,x=x,y=y,latex=latex,label=label, align=align, x.offset=x.offset, ..., id=id)
@@ -87,9 +88,11 @@ draw.svg.label = function(svg,obj, display.whisker=FALSE) {
     display = paste0("{{display_",obj$id,"}}")
 
   x = domain.to.range(x = geom$x,svg = svg)
+  org.x = x
   if (!is.null(geom$x.offset))
     x = x + geom$x.offset
   y = domain.to.range(y = geom$y,svg = svg)
+  org.y = y
   if (!is.null(geom$y.offset))
     y = y - geom$y.offset
 
@@ -109,7 +112,10 @@ draw.svg.label = function(svg,obj, display.whisker=FALSE) {
     if (isTRUE(geom$boxed)) {
       svg_boxed_label(svg,x=x,y=y, text=geom$label,id=obj$id, class=class, level=first.non.null(obj$level,100), style=obj$style, to.range = FALSE, "text-anchor"=anchor, tooltip = geom$tooltip, display=display)
     } else {
-       svg_text(svg,x=x,y=y, text=geom$label,id=obj$id, class=class, level=first.non.null(obj$level,100), font_size=obj$font_size, style=obj$style, to.range = FALSE, "text-anchor"=anchor, tooltip = geom$tooltip, display=display)
+      transform=NULL
+      if (isTRUE(obj$vertical)) 
+        transform=paste0("rotate(-90, ",org.x,", ",org.y,")")
+      svg_text(svg,x=x,y=y, text=geom$label,id=obj$id, class=class, level=first.non.null(obj$level,100), font_size=obj$font_size, style=obj$style, to.range = FALSE, "text-anchor"=anchor,transform=transform, tooltip = geom$tooltip, display=display)
     }
 
     class = ifelse(isTRUE(geom$boxed),"boxed_label","bb_text")

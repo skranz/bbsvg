@@ -1,6 +1,12 @@
 bb_to_svg = function(bb, id = first.non.null(bb$id, random.string()), css=bb$css, width=first.non.null(bb$width,bb$org.width,480), height=first.non.null(bb$height,bb$org.height,320), return.svg.object = FALSE,latexsvg=isTRUE(bb$use.latex),outfile=NULL, ...) {
   restore.point("bb_to_svg")
   
+  if (is.null(bb[["xaxis"]]))
+    bb = bb %>% bb_xaxis()
+  if (is.null(bb[["yaxis"]]))
+    bb = bb %>% bb_yaxis()
+
+  
   xrange = bb$xrange
   yrange = bb$yrange
   
@@ -10,6 +16,12 @@ bb_to_svg = function(bb, id = first.non.null(bb$id, random.string()), css=bb$css
   
   svg = new_svg(id=id,width=width, height=height, xlim=bb$xrange, ylim=bb$yrange,css=css, margins=margins)
 
+
+  bb$values$..x.min = min(xrange)
+  bb$values$..x.max = max(xrange)
+  bb$values$..y.min = min(yrange)
+  bb$values$..y.max = max(yrange)
+  
   bb = bb_compute_objs(bb)
   for (obj in bb$objs) {
     draw.svg.obj(svg, obj)
@@ -107,7 +119,7 @@ draw.svg.segment = function(svg,obj, level=0, display=NULL) {
   r1 = domain.to.range(x=geom$x1, y=geom$y1, svg=svg)  
   r2 = domain.to.range(x=geom$x2, y=geom$y2, svg=svg)  
   
-  el = svg_tag("line", c(nlist(x1=r1$x,x2=r2$x,y1=r1$y,y2=r2$y, style=obj$style, class=obj$class, "stroke-dasharray"=obj[["stroke-dasharray"]])))
+  el = svg_tag("line", c(nlist(x1=r1$x,x2=r2$x,y1=r1$y,y2=r2$y, style=obj$style, class=obj$class, "stroke-dasharray"=obj[["stroke-dasharray"]])),tooltip = geom$tooltip)
 
   svg_add(svg, el, id=obj$id)
 }
@@ -124,7 +136,7 @@ draw.svg.arrow = function(svg,obj, level=-1, display=NULL) {
   arrow.li = list("marker-end"="url(#small_arrow_head)")
   
   
-  el = svg_tag("line", c(nlist(x1=r1$x,x2=r2$x,y1=r1$y,y2=r2$y, style=obj$style, class=obj$class), arrow.li))
+  el = svg_tag("line", c(nlist(x1=r1$x,x2=r2$x,y1=r1$y,y2=r2$y, style=obj$style, class=obj$class), arrow.li),tooltip = geom$tooltip)
 
   svg_add(svg, el, id=obj$id)
 }

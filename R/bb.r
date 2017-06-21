@@ -1,6 +1,6 @@
 ..bb..env = new.env()
 
-bb_pane = function(bb=NULL, id=NULL,  data=NULL, xvar=xy[1], yvar=xy[2], xy=c("x_","y_"), xrange=NULL, yrange=NULL, show.ticks=FALSE, arrow.axis=NULL, xlen=201,ylen=201, org.width = 420, org.height=300, margins=NULL,  show=".all", hide=NULL, init.data=FALSE, dataenv=parent.frame(), css=bb_svg_css(), values = ifelse(!is.null(data), data[data.row,,drop=FALSE],list()), data.row = 1, enclos=parent.frame(), scale=1,... ) {
+bb_pane = function(bb=NULL, id=NULL,  data=NULL, xvar=xy[1], yvar=xy[2], xy=c("x_","y_"), xrange=NULL, yrange=NULL, show.ticks=FALSE, arrow.axis=NULL, xlen=201,ylen=201, org.width = 420, org.height=300, margins=NULL,  show=".all", hide=NULL, init.data=FALSE, dataenv=parent.frame(), css=bb_svg_css(), values = if (!is.null(data)) as.list(data[data.row,,drop=FALSE]) else list(), data.row = 1, enclos=parent.frame(), scale=1,... ) {
   restore.point("bb_pane")
   
   bb = first.non.null(bb, list())
@@ -13,11 +13,21 @@ bb_pane = function(bb=NULL, id=NULL,  data=NULL, xvar=xy[1], yvar=xy[2], xy=c("x
   
   bb$xrange = compute_bb_field(bb$xrange, bb=bb)
   bb$yrange = compute_bb_field(bb$yrange, bb=bb)
-  bb$x0 = min(bb$xrange)
-  bb$y0 = min(bb$yrange)
-  
+  if (!is.null(bb$xrange)) {
+    bb$x.min = min(bb$xrange)
+    bb$x.max = max(bb$xrange)
+  } else {
+    bb$x.min = quote(..x.min)
+    bb$x.max = quote(..x.max)
+  }
+  if (!is.null(bb$yrange)) {
+    bb$y.min = min(bb$yrange)
+    bb$y.max = max(bb$yrange)
+  } else {
+    bb$y.min = quote(..y.min)
+    bb$y.max = quote(..y.max)
+  }
 
-  
   bb$defaults = copy.non.null.fields(bb$defaults, nlist(show.ticks,arrow.axis,...))
   
   bb = copy.into.null.fields(bb, nlist(objs=list(),labels=list(), geoms=list()))
@@ -25,11 +35,6 @@ bb_pane = function(bb=NULL, id=NULL,  data=NULL, xvar=xy[1], yvar=xy[2], xy=c("x
   class(bb) = c("bb_pane","list")
 
   restore.point("bb_pane_2")
-  
-  if (is.null(bb[["xaxis"]]))
-    bb = bb %>% bb_xaxis()
-  if (is.null(bb[["yaxis"]]))
-    bb = bb %>% bb_yaxis()
   
   bb
 }
@@ -40,10 +45,12 @@ bb_xaxis = function(bb,
   labelpos = c("bottom","right","center")[1],
   show.ticks=first.non.null(defaults$show.ticks, TRUE),
   arrow.axis = first.non.null(defaults$arrow.axis, !isTRUE(show.ticks)),
-  defaults=bb$defaults, y.offset = NULL, x.offset = NULL, align=NULL,...
+  defaults=bb$defaults, y.offset = NULL, x.offset = NULL, align=NULL, num.ticks=5, ticks=NULL, tick.size=10
 ) {
   restore.point("bb_xaxis")  
-  bb$xaxis = nlist(type="xaxis", show.ticks, arrow.axis)
+  bb$xaxis = nlist(type="xaxis", show.ticks, arrow.axis, num.ticks, tick.size)
+  if (!is.null(ticks)) bb$xaxis$ticks = ticks
+  
   if (!is.null(label)) {
     if (labelpos == "bottom") {
       y = bb$y0
@@ -85,20 +92,20 @@ bb_yaxis = function(bb,
     if (labelpos == "left") {
       y = max(bb$yrange)
       align = first.non.null(align, "right")
-      x = bb$x0
+      x = bb$x.min
       y.offset = first.non.null(y.offset, 5)
       x.offset = first.non.null(x.offset, -5)
       
     } else if (labelpos == "top") {
       y = max(bb$yrange)
       align = first.non.null(align, "center")
-      x = bb$x0
+      x = bb$x.min
       y.offset = first.non.null(y.offset, 20)
       x.offset = first.non.null(x.offset, 0)
     } else {
       y = mean(bb$yrange)
       align = first.non.null(align, "right")
-      x = bb$x0
+      x = bb$x.min
       y.offset = first.non.null(y.offset, 0)
       x.offset = first.non.null(x.offset,-5)
     }
@@ -138,8 +145,8 @@ bb_margins = function(bb, bottom=NULL,left=NULL, top=NULL, right=NULL,...) {
   bb
 }
 
-bb_area = function(bb, x,y, fill="#ffff33", alpha=0.3,stroke="none", style=nlist(fill=fill, "fill-opacity"=alpha,stroke=stroke,...), ..., id=random.string()) {
-  obj = nlist(id, type="area", x,y, style, eval.fields=c("x","y"))
+bb_area = function(bb, x,y, fill="#ffff33", alpha=0.3,stroke="none", style=nlist(fill=fill, "fill-opacity"=alpha,stroke=stroke,...), ..., id=random.string(), tooltip=NULL) {
+  obj = nlist(id, type="area", x,y, style, eval.fields=c("x","y"), tooltip=tooltip)
   bb_object(bb, obj)
 }
 
@@ -202,9 +209,11 @@ bb_svg_css = function() {
   stroke-opacity: 0.8;
 }
 
+/*
 .polyline:hover {
   stroke-width: 5;
 }
+*/
 
 .curve:hover {
   stroke-width: 5;
@@ -219,7 +228,8 @@ bb_svg_css = function() {
 }
 
 .axis-tick {
-  stroke-width: 0.5;
+  stroke-width: 1;
+  stroke: black;
 }
 
 .axis-ticklabel {

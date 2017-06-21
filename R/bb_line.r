@@ -23,15 +23,17 @@ bb_tangent = function(bb, x=NULL,y=NULL, slope=NULL, width=NULL, alpha=NULL,colo
   bb_segment(bb,x1=x1,x2=x2,y1=y1,y2=y2,alpha=alpha,color=color, class="segment",linetype=linetype,...)
 }
 
-bb_segment = function(bb, x1=x,x2=x1,y1=y,y2=y1,x,y, alpha=NULL,color=NULL, class="segment",linetype="solid", lwd=NULL, dasharray = linetype.to.dasharry(linetype),  style=list(stroke=color, "stroke-opacity"=alpha, "stroke-width"=lwd,...), ..., id=paste0("segment_",random.string())) {
+bb_hline = function(bb,y,alpha=NULL,color=NULL, class="segment",linetype="solid", lwd=NULL,  style=list(stroke=color, "stroke-opacity"=alpha, "stroke-width"=lwd,...), ..., id=paste0("hline_",random.string())) {
+  bb_segment(bb,y=y, x1=bb$x.min, x2=bb$x.max, color=color, class=class, alpha=alpha, lwd=lwd, linetype=linetype, style=style, id=id)
+}
+
+bb_segment = function(bb, x1=x,x2=x1,y1=y,y2=y1,x,y, alpha=NULL,color=NULL, class="segment",linetype="solid", lwd=NULL, dasharray = linetype.to.dasharry(linetype),  style=list(stroke=color, "stroke-opacity"=alpha, "stroke-width"=lwd,...), ..., tooltip=NULL, id=paste0("segment_",random.string())) {
   restore.point("bb_segment")
 
   ma = bb.normalize.multi.arguments(nlist(x1,x2,y1,y2))
-  
 
-  
   if (ma$len == 1) {
-     obj = nlist(id, type="segment", class=class, x1=x1,y1=y1,x2=x2,y2=y2, style,"stroke-dasharray"=dasharray, eval.fields=c("x1","y1","x2", "y2"))
+     obj = nlist(id, type="segment", class=class, x1=x1,y1=y1,x2=x2,y2=y2, style,"stroke-dasharray"=dasharray, eval.fields=c("x1","y1","x2", "y2"), tooltip=tooltip)
     return(bb_object(bb, obj))
   }
   restore.point("bb_segment.multi")
