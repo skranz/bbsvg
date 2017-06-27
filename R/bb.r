@@ -45,34 +45,42 @@ bb_xaxis = function(bb,
   labelpos = c("bottom","right","center")[1],
   show.ticks=first.non.null(defaults$show.ticks, TRUE),
   arrow.axis = first.non.null(defaults$arrow.axis, !isTRUE(show.ticks)),
-  defaults=bb$defaults, y.offset = NULL, x.offset = NULL, align=NULL, num.ticks=5, ticks=NULL, tick.size=10
+  defaults=bb$defaults, y.offset = NULL, x.offset = NULL, y="bottom", align=NULL, num.ticks=5, ticks=NULL, tick.size=10
 ) {
   restore.point("bb_xaxis")  
-  bb$xaxis = nlist(type="xaxis", show.ticks, arrow.axis, num.ticks, tick.size)
+  bb$xaxis = nlist(type="xaxis", show.ticks, arrow.axis, num.ticks, tick.size,y=y)
   if (!is.null(ticks)) bb$xaxis$ticks = ticks
   
   if (!is.null(label)) {
+    if (y=="bottom") {
+      lab.y = bb$y.min
+    } else if (x=="right") {
+      lab.y = bb$y.max
+    } else if (is.numeric(y)) {
+      lab.y = y
+    } else {
+      lab.y = bb$y.min
+    }
+    
     if (labelpos == "bottom") {
-      y = bb$y0
+      
       align = first.non.null(align, "center")
-      x = max(bb$xrange)
+      lab.x = max(bb$xrange)
       y.offset = first.non.null(y.offset, -20)
       x.offset = first.non.null(x.offset, 15)
       
     } else if (labelpos == "right") {
-      y = bb$y0
       align = first.non.null(align, "left")
-      x = max(bb$xrange)
+      lab.x = max(bb$xrange)
       y.offset = first.non.null(y.offset, 0)
       x.offset = first.non.null(x.offset, 15)
     } else {
-      y = bb$y0
       align = first.non.null(align, "center")
-      x = max(bb$xrange)
+      lab.x = max(bb$xrange)
       y.offset = first.non.null(y.offset, -50)
       x.offset = first.non.null(x.offset,0)
     }
-    bb = bb_text(bb,label=label, latex=latex, x=x, y=y, x.offset=x.offset, y.offset=y.offset, align=align)
+    bb = bb_text(bb,label=label, latex=latex, x=lab.x, y=lab.y, x.offset=x.offset, y.offset=y.offset, align=align)
   }
   
   bb
@@ -84,41 +92,47 @@ bb_yaxis = function(bb,
   labelpos = c("left","top","center")[1],
   show.ticks=first.non.null(defaults$show.ticks, TRUE),
   arrow.axis = first.non.null(defaults$arrow.axis, !isTRUE(show.ticks)),
-  defaults=bb$defaults, y.offset = NULL, x.offset = NULL, align=NULL,...
+  defaults=bb$defaults, y.offset = NULL, x.offset = NULL, align=NULL, x="left",...
 ) {
   restore.point("bb_yaxis")  
   
   if (!is.null(label)) {
+    if (x=="left") {
+      lab.x = bb$x.min
+    } else if (x=="right") {
+      lab.x = bb$x.max
+    } else if (is.numeric(x)) {
+      lab.x = x
+    } else {
+      lab.x = bb$xmin
+    }
     if (labelpos == "left") {
-      y = max(bb$yrange)
+      lab.y = max(bb$yrange)
       align = first.non.null(align, "right")
-      x = bb$x.min
       y.offset = first.non.null(y.offset, 5)
-      x.offset = first.non.null(x.offset, -5)
+      x.offset = first.non.null(x.offset, -8)
       
     } else if (labelpos == "top") {
-      y = max(bb$yrange)
+      lab.y = max(bb$yrange)
       align = first.non.null(align, "center")
-      x = bb$x.min
       y.offset = first.non.null(y.offset, 20)
       x.offset = first.non.null(x.offset, 0)
     } else {
-      y = mean(bb$yrange)
+      lab.y = mean(bb$yrange)
       align = first.non.null(align, "right")
-      x = bb$x.min
       y.offset = first.non.null(y.offset, 0)
       x.offset = first.non.null(x.offset,-5)
     }
-    bb = bb_text(bb,label=label, latex=latex, x=x, y=y, x.offset=x.offset, y.offset=y.offset, align=align)
+    bb = bb_text(bb,label=label, latex=latex, x=lab.x, y=lab.y, x.offset=x.offset, y.offset=y.offset, align=align)
   }
   
-  bb$yaxis = nlist(type="yaxis", show.ticks, arrow.axis)
+  bb$yaxis = nlist(type="yaxis", show.ticks, arrow.axis,x=x)
   bb
 }
 
 bb_xmarker = function(bb,x=NULL,y2=y,y=NULL,...,linetype="dashed",label=x,latex=NULL, align="center", y.offset=-20, id = random.string()) {
   restore.point("bb_xmarker")
-  y1=bb$y0
+  y1=bb$y.min
   y2=first.non.null(y2,max(bb$yrange))
   
   bb=bb_xtick(bb,latex=latex,label=label,  align=align, y.offset=y.offset,x=x, ..., id=paste0(id,"_text"))
@@ -128,7 +142,7 @@ bb_xmarker = function(bb,x=NULL,y2=y,y=NULL,...,linetype="dashed",label=x,latex=
 
 bb_ymarker = function(bb,y=NULL,x2=x,x=NULL,...,linetype="dashed",label=y,latex=NULL, align="right", id = random.string()) {
   restore.point("bb_ymarker")
-  x1=bb$y0
+  x1=bb$y.min
   x2=first.non.null(x2,max(bb$xrange))
   
   bb=bb_ytick(bb,latex=latex,label=label,  align=align, y=y, ..., id=paste0(id,"_text"))

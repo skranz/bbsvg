@@ -40,7 +40,7 @@ bb_text = function(bb, label=NULL,latex=NULL,x=NULL,y=NULL,xrel=NULL, yrel=NULL,
 
 bb_xtick = function(bb,x=NULL,...,label=x,latex=NULL, align="center", y.offset=-20,y=NULL, id = random.string()) {
   restore.point("bb_xtick")
-  y=first.non.null(y,bb$y0)
+  y=first.non.null(y,bb$y.min)
   bid = id
   
   bb = bb_text(bb,x=x,y=y,latex=latex,label=label, align=align, y.offset=y.offset, ..., id=id)

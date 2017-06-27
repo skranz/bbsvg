@@ -331,25 +331,20 @@ svg_boxed_label = function(svg, x,y, text,id=NULL, class="boxed-label",style=c(n
 }
 
 
-svg_axis = function(svg,...) {
-  restore.point("svg_axis")
-  svg_xaxis(svg,...)
-  svg_yaxis(svg,...)
-}
 
-svg_xaxis = function(svg, id="xaxis", label=NULL, latex = NULL,  align="default", dr=svg$dr, return.string=FALSE, level=100, num.ticks=5, ticks =pretty.ticks(dr$domain$x, n=num.ticks), tick.size = 10, arrow=!show.ticks, show.ticks = TRUE, show.tick.labels=show.ticks, class.group= "axis x-axis",  class.line="axis-main", class.tick="axis-tick",class.tick.label="axis-ticklabel", class.label="axis-label", style.line=NULL, style.tick=NULL,style.tick.label=NULL, style.label=NULL, axis.offset=if (show.ticks) 10 else 0, axis.label.offset=if (show.ticks) 30 else 20,...) {
+svg_xaxis = function(svg, id="xaxis", label=NULL, latex = NULL,  y="default", dr=svg$dr, return.string=FALSE, level=100, num.ticks=5, ticks =pretty.ticks(dr$domain$x, n=num.ticks), tick.size = 10, arrow=!show.ticks, show.ticks = TRUE, show.tick.labels=show.ticks, class.group= "axis x-axis",  class.line="axis-main", class.tick="axis-tick",class.tick.label="axis-ticklabel", class.label="axis-label", style.line=NULL, style.tick=NULL,style.tick.label=NULL, style.label=NULL, axis.offset=if (show.ticks) 10 else 0, axis.label.offset=if (show.ticks) 30 else 20,...) {
   restore.point("svg_xaxis")
   x.ax = dr$range$x
-  if (align=="default" || align == "bottom") {
-    align = dr$range$y[1] + axis.offset
-  } else if (align=="top") {
-    align = dr$range$y[2] - axis.offset
-  } else if (align=="zero") {
-    align = max(dr$range$y[1],domain.to.range(y=align,svg = svg))
-  } else if (is.numeric(align)) {
-    align = domain.to.range(y=align,svg = svg)
+  if (y=="default" || y == "bottom") {
+    y = dr$range$y[1] + axis.offset
+  } else if (y=="top") {
+    y = dr$range$y[2] - axis.offset
+  } else if (y=="zero") {
+    y = max(dr$range$y[1],domain.to.range(y=y,svg = svg))
+  } else if (is.numeric(y)) {
+    y = domain.to.range(y=y,svg = svg)
   }
-  y.ax = rep(align,2)
+  y.ax = rep(y,2)
 
   if (arrow) {
     svg_def_arrow_head(svg)
@@ -391,24 +386,26 @@ svg_xaxis = function(svg, id="xaxis", label=NULL, latex = NULL,  align="default"
 }
 
 
-svg_yaxis = function(svg, id="yaxis", label=NULL,latex = NULL,
-  align="default", dr=svg$dr, return.string=FALSE, level=100, num.ticks=5, ticks =pretty.ticks(dr$domain$y, n=num.ticks), tick.size = 10, arrow=!show.ticks, show.ticks = TRUE, show.tick.labels=show.ticks,
+svg_yaxis = function(svg, id="yaxis", label=NULL,latex = NULL,x="left", dr=svg$dr, return.string=FALSE, level=100, num.ticks=5, ticks =pretty.ticks(dr$domain$y, n=num.ticks), tick.size = 10, arrow=!show.ticks, show.ticks = TRUE, show.tick.labels=show.ticks,
   axis.offset = if (show.ticks) 10 else 0, axis.label.offset=20,
   class.group= "axis y-axis",  class.line="axis-main", class.tick="axis-tick",class.tick.label="axis-ticklabel", class.label="axis-label",
   style.line=NULL, style.tick=NULL,style.tick.label=NULL, style.label=NULL,...  ) {
   restore.point("svg_yaxis")
 
   y.ax = dr$range$y
-  if (align == "default" || align=="left") {
-    align = dr$range$x[1] - axis.offset
-  } else if (align=="zero") {
-    align = max(dr$range$x[1],domain.to.range(x=align,svg = svg))
-  } else if (align=="right") {
-    align = dr$range$y[2] + axis.offset
-  } else if (is.numeric(align)) {
-    align = domain.to.range(x=align,svg = svg)
+  if (is.null(x)) x= dr$domain$x[1]
+  min.xr = dr$range$x[1]
+  
+  if (x == "default" || x=="left") {
+    x = min.xr - axis.offset
+  } else if (x=="zero") {
+    x = max(min.xr,domain.to.range(x=x,svg = svg))
+  } else if (x=="right") {
+    x = dr$range$y[2] + axis.offset
+  } else if (is.numeric(x)) {
+    x = domain.to.range(x=x,svg = svg)
   }
-  x.ax = rep(align,2)
+  x.ax = rep(x,2)
 
   if (arrow) {
     svg_def_arrow_head(svg)
