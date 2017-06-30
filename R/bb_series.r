@@ -76,7 +76,7 @@ bb_series = function(bb, x=data[[xvar]],y=data[[yvar]],data=bb$data, xvar=1,yvar
 }
 
 
-draw.svg.series = function(svg,obj, level=0, display=NULL) {
+draw.svg.series = function(svg,obj, level=0, display=NULL,bb=NULL) {
   restore.point("draw.svg.series")
   #display = init.geom.display(geom, display)
   geom = obj$geom

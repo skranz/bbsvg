@@ -80,7 +80,7 @@ compute_bb_label = function(bb, obj) {
 
 }
 
-draw.svg.label = function(svg,obj, display.whisker=FALSE) {
+draw.svg.label = function(svg,obj, display.whisker=FALSE,bb=NULL) {
   restore.point("draw.svg.label")
   geom = obj$geom
   display=""

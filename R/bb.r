@@ -72,8 +72,8 @@ bb_xaxis = function(bb,
     } else if (labelpos == "right") {
       align = first.non.null(align, "left")
       lab.x = max(bb$xrange)
-      y.offset = first.non.null(y.offset, 0)
-      x.offset = first.non.null(x.offset, 15)
+      y.offset = first.non.null(y.offset, -3)
+      x.offset = first.non.null(x.offset, 20)
     } else {
       align = first.non.null(align, "center")
       lab.x = max(bb$xrange)
@@ -157,11 +157,6 @@ bb_margins = function(bb, bottom=NULL,left=NULL, top=NULL, right=NULL,...) {
   margins = nlist(bottom, left, top, right)
   bb$margins = copy.non.null.fields(bb[["margins"]], margins)
   bb
-}
-
-bb_area = function(bb, x,y, fill="#ffff33", alpha=0.3,stroke="none", style=nlist(fill=fill, "fill-opacity"=alpha,stroke=stroke,...), ..., id=random.string(), tooltip=NULL) {
-  obj = nlist(id, type="area", x,y, style, eval.fields=c("x","y"), tooltip=tooltip)
-  bb_object(bb, obj)
 }
 
 

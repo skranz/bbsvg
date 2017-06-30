@@ -22,10 +22,10 @@ bb_slopecurve = function(bb,x,y,slope,color=NULL, lwd=NULL, style=nlist(stroke=c
 
 
 
-bb_curve = function(bb,id=random.string(),eq,latex=NULL, label=NULL, data=NULL,color=NULL, lwd=NULL, style=nlist(stroke=color, stroke_width=lwd,...), var.funs=NULL,labpos=NULL,labx=NULL, laby=NULL,tooltip=NULL,dy=NULL,dx=NULL,...) {
+bb_curve = function(bb,id=random.string(),eq,latex=NULL, label=NULL, data=NULL,color=NULL, lwd=NULL, style=nlist(stroke=color, stroke_width=lwd,...), var.funs=NULL,labpos=NULL,labx=NULL, laby=NULL,tooltip=NULL,dy=NULL,dx=NULL,no.draw=FALSE, xrange=bb$xrange, yrange=bb$yrange,...) {
   restore.point("bb_curve")
   
-  curve = nlist(type="curve",id,eq,data,style,label,latex, tooltip,dx,dy)
+  curve = nlist(type="curve",id,eq,data,style,label,latex, tooltip,dx,dy, no.draw, xrange, yrange)
   
   curve$eq_ = parse.as.call(text=curve$eq)
   
@@ -70,7 +70,7 @@ bb_curve = function(bb,id=random.string(),eq,latex=NULL, label=NULL, data=NULL,c
 
 
 # compute.curve.gcurve
-bb_compute_curve = function(bb,curve,values=bb$values, xlen=bb$xlen, ylen=bb$ylen,xrange=bb$xrange,yrange=bb$yrange, ...) {
+bb_compute_curve = function(bb,curve,values=bb$values, xlen=bb$xlen, ylen=bb$ylen,xrange=first.non.null(curve$xrange,bb$xrange),yrange=first.non.null(curve$yrange,bb$yrange), ...) {
   restore.point("bb_compute_curve")
   
   cu = curve
@@ -239,7 +239,7 @@ draw.svg.slopecurve = function(...) {
 }
 
 
-draw.svg.curve = function(svg,obj,level=first.non.null(obj$level,0), display=NULL) {
+draw.svg.curve = function(svg,obj,level=first.non.null(obj$level,0), display=NULL, bb=NULL) {
   restore.point("draw.svg.curve")
   display = init.geom.display(obj, display)
   geom=obj$geom
