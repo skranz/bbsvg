@@ -85,7 +85,8 @@ svg_from_plot = function(call, width=500, height=400, envir=parent.frame(), bg="
 }
 
 
-new_svg = function(width=500, height=400, xlim=c(0,1),ylim=xlim,id=NULL, css=default_svg_css(), margins=c(bottom=80,left=100, top=40, right=50), class="clickable_svg") {
+new_svg = function(width=500, height=400, vb_w=width, vb_h=height, xlim=c(0,1),ylim=xlim,id=NULL, css=default_svg_css(), margins=c(bottom=80,left=100, top=40, right=50), class="clickable_svg", viewBox = paste0("0,0,",vb_w,",", vb_h)
+) {
   restore.point("svg")
 
   if (is.null(id))
@@ -93,8 +94,11 @@ new_svg = function(width=500, height=400, xlim=c(0,1),ylim=xlim,id=NULL, css=def
   svg = new.env()
   
   svg$id = id
-  svg$head = paste0("<svg xmlns='http://www.w3.org/2000/svg' version='1.1' width='",width,"' height='",height,"' id = '",id,"' class='",class,"'>")
-  svg$width = 500
+  
+  #svg$head = paste0("<svg xmlns='http://www.w3.org/2000/svg' version='1.1' width='",width,"' height='",height,"' id = '",id,"' class='",class,"'>")
+  svg$head = paste0("<svg xmlns='http://www.w3.org/2000/svg' version='1.1' width='",width,"' height='",height,"' viewBox='",viewBox,"' id = '",id,"' class='",class,"'>")
+  
+  svg$width = width
   svg$height = height
   svg$dr = make.domain.range(xlim=xlim,ylim=ylim,width=width, height=height, margins=margins)
   svg$el = NULL
@@ -295,7 +299,7 @@ html_arg_str = function(..., .quote='"') {
 svg_point = function(svg, x,y,id=NULL, class="point",level=110,fill=NULL, tooltip=NULL,label = NULL,r=5,...) {
   restore.point("svg_point")
   rp = domain.to.range(x=x,y=y,svg=svg)
-  ci = svg_tag("circle",nlist(cx=rp$x,cy=rp$y,r=r,class,id,fill=fill,...), tooltip=tooltip) 
+  ci = svg_tag("circle",nlist(cx=rp$x,cy=rp$y,r=r,class,id=id,fill=fill,...), tooltip=tooltip) 
   el = ci
   svg_add(svg,el,id,level=level)
   if (!is.null(label)) {
@@ -312,7 +316,12 @@ svg_polyline = function(svg, x,y,id=NULL, class="polyline",style=c(nlist(fill, s
   svg_add(svg,el,id,level=level)
 }
 
-svg_mathjax_label = function(svg, x,y, text, latex = paste0("\\(",text,"\\)"),id=NULL, class=NULL,style=c(nlist("font-size"=font_size), extra.style), font_size=12, extra.style=list(), level=1, tooltip=NULL, to.range=TRUE,align="",...) {
+color.inner.latex = function(inner, color=NULL) {
+  if (is.null(color)) return(inner)
+  paste0("\\color{",color,"}{",inner,"}")  
+}
+
+svg_mathjax_label = function(svg, x,y, text, latex = paste0("\\(",color.inner.latex(text,color),"\\)"),id=NULL, class=NULL,style=c(nlist("font-size"=font_size), extra.style), font_size=12, extra.style=list(), level=1, tooltip=NULL, to.range=TRUE,align="",color=NULL,...) {
   restore.point("svg_mathjax_label")
   text = paste0(align,latex)
   rp = domain.to.range(x=x,y=y,svg=svg, to.range=to.range)

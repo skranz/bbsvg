@@ -24,15 +24,18 @@ bb_to_svg = function(bb, id = first.non.null(bb$id, random.string()), css=bb$css
   
   bb = bb_compute_objs(bb)
   
-  levels = sapply(bb$objs, function(obj) first.non.null(obj$level,0))
   
-  objs = bb$objs[rank(levels,ties.method = "first")]
-  
-  for (obj in objs) {
-    draw.svg.obj(svg, obj,bb=bb)
-  }  
-
-      
+  if (length(bb$objs)>0) {
+    
+    # draw objects in ascending level order
+    levels = sapply(bb$objs, function(obj) first.non.null(obj$level,0))
+    objs = bb$objs[rank(levels,ties.method = "first")]
+    
+    for (obj in objs) {
+      draw.svg.obj(svg, obj,bb=bb)
+    }  
+    
+  }
 
   
   
@@ -105,7 +108,7 @@ draw.svg.point = function(svg,obj, level=0, display=NULL,bb=NULL) {
   
   range = domain.to.range(x=geom$x, y=geom$y, svg=svg)
   
-  el = svg_tag("circle", c(nlist(cx=range$x,cy=range$y,r = geom$r, style=obj$style, class=obj$class)))
+  el = svg_tag("circle", c(nlist(cx=range$x,cy=range$y,r = geom$r, style=obj$style, class=obj$class, id=obj$id)))
 
   svg_add(svg, el, id=obj$id)
 }

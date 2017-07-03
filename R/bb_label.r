@@ -20,7 +20,7 @@ bb_text = function(bb, label=NULL,latex=NULL,x=NULL,y=NULL,xrel=NULL, yrel=NULL,
   ma = bb.normalize.multi.arguments(nlist(x,y,label,latex))
   
   if (ma$len == 1) {
-    obj = nlist(id, label, latex, x,y,xrel,yrel, use.latex,align,label.mode=ifelse(use.latex,"latex","text"), x.offset, y.offset, boxed,style, font_size,vertical=vertical, ...)
+    obj = nlist(id, label, latex, x,y,xrel,yrel, use.latex,align,label.mode=ifelse(use.latex,"latex","text"), x.offset, y.offset, boxed,style, font_size,vertical=vertical, color, ...)
     bb$labels[[id]] = obj
     return(bb)
   }
@@ -103,7 +103,7 @@ draw.svg.label = function(svg,obj, display.whisker=FALSE,bb=NULL) {
     if (align=="center") align=""
 
 
-    svg_mathjax_label(svg,x=x,y=y, text=geom$label,id=obj$id, level=first.non.null(obj$level,100), align=align, to.range = FALSE, tooltip = geom$tooltip, display=display)
+    svg_mathjax_label(svg,x=x,y=y, text=geom$label,id=obj$id, level=first.non.null(obj$level,100), align=align, to.range = FALSE, tooltip = geom$tooltip, display=display, color=obj$color)
 
   } else {
     anchor = "middle"

@@ -3,6 +3,9 @@ view.bb = function(bb, latexsvg=isTRUE(bb$use.latex), launch.browser = rstudio::
   restore.point("view.bb")
   library(shinyEvents)
   svg = bb_to_svg(bb,id = "mysvg", return.svg.object = TRUE)
+
+  www = system.file("www", package="bbsvg")  
+  addResourcePath(prefix = "bbsvg",directoryPath = www)
   
   hsvg = svg_string(svg)
   if (latexsvg) {
@@ -14,6 +17,7 @@ view.bb = function(bb, latexsvg=isTRUE(bb$use.latex), launch.browser = rstudio::
   app$prev.xy = NULL
   
   app$ui = fluidPage(
+    tags$head(tags$script(src="bbsvg/velocity.min.js")),
     div(style="cursor: crosshair;",HTML(hsvg))
   )
   svgClickHandler("mysvg", function(x,y,app=getApp(),...) {
