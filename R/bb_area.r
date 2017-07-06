@@ -10,6 +10,9 @@ view.bb(bb)
 
 }
 
+bb_area_rect = function(bb, x1,y1,x2,y2,...) {
+  bb_area(bb,x=c(x1,x1,x2,x2),y=c(y1,y2,y2,y1),...)
+}
 
 bb_area = function(bb, x,y, fill="#8888ff", alpha=0.3,stroke="none", style=nlist(fill=fill, "fill-opacity"=alpha,stroke=stroke,...), level=-10, ..., id=random.string(), tooltip=NULL) {
   obj = nlist(id, type="area", x,y, style, eval.fields=c("x","y"), tooltip=tooltip, level)
@@ -52,7 +55,7 @@ bb_area_beside_curve = function(bb, eq=NULL, curve.id = NULL, fill="#8888ff", al
       bb = bb_curve(bb, id=curve.id,eq=curve$eq, no.draw=TRUE, xrange=xrange, yrange=yrange)
     }      
   }
-  obj = nlist(id, type="area_beside_curve", curve.id=curve.id, style,  tooltip=tooltip, level=level, direction=direction)
+  obj = nlist(id, type="area_beside_curve", curve.id=curve.id, style,  tooltip=tooltip, level=level, direction=direction,xrange=xrange, yrange=yrange)
   bb_object(bb, obj)
 }
 
@@ -66,17 +69,22 @@ draw.svg.area_beside_curve = function(svg,obj, level=first.non.null(obj[["level"
   y = geom$y
   
   n = length(x)
+  y.max = max(obj$yrange)
+  x.max = max(obj$xrange)
+  y.min = min(obj$yrange)
+  x.min = min(obj$xrange)
+  
   if (obj$direction=="left") {
-    x = c(bb$x.min, x, bb$x.min)
+    x = c(x.min, x, x.min)
     y = c(y[1],y,y[n])
   } else if (obj$direction=="right") {
-    x = c(bb$x.max, x, bb$x.max)
+    x = c(x.max, x, x.max)
     y = c(y[1],y,y[n])
   } else if (obj$direction == "above") {
-    y = c(bb$y.max, y, bb$y.max)
+    y = c(y.max, y, y.max)
     x = c(x[1],x,x[n])
   } else if (obj$direction == "below") {
-    y = c(bb$y.min, y, bb$y.min)
+    y = c(y.min, y, y.min)
     x = c(x[1],x,x[n])
   }
   

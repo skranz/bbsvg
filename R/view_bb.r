@@ -1,6 +1,11 @@
 
-view.bb = function(bb, latexsvg=isTRUE(bb$use.latex), launch.browser = rstudio::viewer,...) {
+disable.view.bb = function(disable=TRUE) {
+  options(disable_view_bb = disable)
+}
+
+view.bb = function(bb, latexsvg=isTRUE(bb$use.latex), launch.browser = rstudio::viewer, skip = isTRUE(getOption("disable_view_bb")),...) {
   restore.point("view.bb")
+  if (skip) return()
   library(shinyEvents)
   svg = bb_to_svg(bb,id = "mysvg", return.svg.object = TRUE)
 

@@ -356,8 +356,9 @@ svg_xaxis = function(svg, id="xaxis", label=NULL, latex = NULL,  y="default", dr
   y.ax = rep(y,2)
 
   if (arrow) {
+    arrow.id = paste0(svg$id,"_arrow_head")
     svg_def_arrow_head(svg)
-    arrow.li = list("marker-end"="url(#arrow_head)")
+    arrow.li = list("marker-end"=paste0("url(#",arrow.id,")"))
   } else {
     arrow.li = NULL
   }
@@ -417,8 +418,9 @@ svg_yaxis = function(svg, id="yaxis", label=NULL,latex = NULL,x="left", dr=svg$d
   x.ax = rep(x,2)
 
   if (arrow) {
+    arrow.id = paste0(svg$id,"_arrow_head")
     svg_def_arrow_head(svg)
-    arrow.li = list("marker-end"="url(#arrow_head)")
+    arrow.li = list("marker-end"=paste0("url(#",arrow.id,")"))
   } else {
     arrow.li = NULL
   }

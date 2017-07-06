@@ -4,7 +4,7 @@ bb_isoquant = function(bb, Q,x,y,...,id=paste0("isoquant_",random.string()),xvar
   bb_slopecurve(bb,x=x,y=y,slope=slope,xvar=xvar,yvar=yvar,id=id,...)
 }
 
-bb_slopecurve = function(bb,x,y,slope,color=NULL, lwd=NULL, style=nlist(stroke=color, stroke_width=lwd,...), x.move=0, y.move=0, xrange=bb$xrange, yrange=bb$yrange, var.funs=NULL,tooltip=NULL,..., data=NULL, id=paste0("slopecurve_",random.string()),xvar=bb$xvar,yvar=bb$yvar) {
+bb_slopecurve = function(bb,x,y,slope,color=NULL, lwd=NULL, alpha=NULL, style=nlist(stroke=color, stroke_width=lwd,"stroke-opacity"=alpha,...), x.move=0, y.move=0, xrange=bb$xrange, yrange=bb$yrange, var.funs=NULL,tooltip=NULL,..., data=NULL, id=paste0("slopecurve_",random.string()),xvar=bb$xvar,yvar=bb$yvar) {
   restore.point("bb_slopecurve")
   
   if (is.character(slope)) {
@@ -22,7 +22,7 @@ bb_slopecurve = function(bb,x,y,slope,color=NULL, lwd=NULL, style=nlist(stroke=c
 
 
 
-bb_curve = function(bb,id=random.string(),eq,latex=NULL, label=NULL, data=NULL,color=NULL, lwd=NULL, style=nlist(stroke=color, stroke_width=lwd,...), var.funs=NULL,labpos=NULL,labx=NULL, laby=NULL,tooltip=NULL,dy=NULL,dx=NULL,no.draw=FALSE, xrange=bb$xrange, yrange=bb$yrange,...) {
+bb_curve = function(bb,id=random.string(),eq,latex=NULL, label=NULL, data=NULL,color=NULL, lwd=NULL, style=nlist(stroke=color, stroke_width=lwd,"stroke-opacity"=alpha,...), var.funs=NULL,labpos=NULL,labx=NULL, laby=NULL,tooltip=NULL,dy=NULL,dx=NULL,no.draw=FALSE, xrange=bb$xrange, yrange=bb$yrange,alpha=NULL,...) {
   restore.point("bb_curve")
   
   curve = nlist(type="curve",id,eq,data,style,label,latex, tooltip,dx,dy, no.draw, xrange, yrange)

@@ -49,7 +49,7 @@ bb_segment = function(bb, x1=x,x2=x1,y1=y,y2=y1,x,y, alpha=NULL,color=NULL, clas
 
 
 
-bb_arrow = function(bb, x1,x2=x1,y1,y2=y1, arrow.head=c("end"), alpha=NULL,color=NULL, class="arrow", style=list(stroke=color, "stroke-opacity"=alpha,...), ..., id=random.string()) {
+bb_arrow = function(bb, x1=x,x2=x1,y1=y,y2=y1,x, y, arrow.head=c("end"), alpha=NULL,color=NULL, class="arrow", style=list(stroke=color, "stroke-opacity"=alpha,...), ..., id=random.string()) {
   obj = nlist(id, type="arrow", class, x1,y1,x2,y2, style, eval.fields=c("x1","y1","x2", "y2"))
   bb_object(bb, obj)
 }

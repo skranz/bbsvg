@@ -127,8 +127,8 @@ draw.svg.segment = function(svg,obj, level=0, display=NULL,bb=NULL) {
   svg_add(svg, el, id=obj$id)
 }
 
-draw.svg.arrow = function(svg,obj, level=-1, display=NULL,bb=NULL) {
-  restore.point("draw.svg.area")
+draw.svg.arrow = function(svg,obj, level=-1, display=NULL,bb=NULL, arrow.id = paste0(svg$id,"_small_arrow_head")) {
+  restore.point("draw.svg.arrow")
   #display = init.geom.display(geom, display)
   geom = obj$geom
   
@@ -136,15 +136,14 @@ draw.svg.arrow = function(svg,obj, level=-1, display=NULL,bb=NULL) {
   r2 = domain.to.range(x=geom$x2, y=geom$y2, svg=svg)  
   
   svg_def_small_arrow_head(svg)
-  arrow.li = list("marker-end"="url(#small_arrow_head)")
-  
+  arrow.li = list("marker-end"=paste0("url(#",arrow.id,")"))  
   
   el = svg_tag("line", c(nlist(x1=r1$x,x2=r2$x,y1=r1$y,y2=r2$y, style=obj$style, class=obj$class), arrow.li),tooltip = geom$tooltip)
 
   svg_add(svg, el, id=obj$id)
 }
 
-svg_def_small_arrow_head =  function(svg,id="small_arrow_head", class="arrow_head") {
+svg_def_small_arrow_head =  function(svg,id=paste0(svg$id,"_small_arrow_head"), class="arrow_head") {
   svg_add_def(svg=svg,id=id,
     paste0('
     <marker id="',id,'" class="',class,'" markerWidth="10" markerHeight="10" refx="0" refy="3" orient="auto" markerUnits="userSpaceOnUse">
@@ -156,7 +155,7 @@ svg_def_small_arrow_head =  function(svg,id="small_arrow_head", class="arrow_hea
 }
 
 
-svg_def_arrow_head =  function(svg,id="arrow_head", class="arrow_head") {
+svg_def_arrow_head =  function(svg,id=paste0(svg$id,"_arrow_head"), class="arrow_head") {
   svg_add_def(svg=svg,id=id,
     paste0('
     <marker id="',id,'" class="',class,'" markerWidth="10" markerHeight="10" refx="0" refy="3" orient="auto" markerUnits="strokeWidth">
