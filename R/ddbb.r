@@ -16,13 +16,14 @@ dd = ddsim() %>%
 select(sim[1:5,],"t","Y","C","I")
 show = c("Y","C","I")
 
-bb = dd_bbplot(dd,sim,show, rows=1:20,ylim=c(0,110),lwd=3, margins=c("right"=60)) %>% bb_xaxis(label="Periode",labelpos = "center") %>% bb_yaxis(ticks=c(0,25,50,75,100)) %>% bb_ymarker(y=50, label="")
+bb = dd_bbplot(dd,sim,show, rows=1:20,ylim=c(0,110),lwd=3, margins=c("right"=60)) %>% bb_xaxis(label="Periode",labelpos = "center") %>% bb_yaxis(ticks=c(0,25,50,75,100)) %>% bb_ymarker(y=50, label="") %>% bb_series_tooltip_bars(xname="Periode")
+  
 
 view.bb(bb)
 }
 
 
-dd_bbplot = function(dd, dat=dd_data(dd), cols=dd$var.names, main="",xlab=dd$time.var,ylab="", shocks=dd$shocks, show.shocks = TRUE, rows=1:NROW(dat),xlim=range(rows),ylim=NULL,colors=colors_bb_series(),show.ticks=TRUE,lwd=2,labels=cols,draw.points=TRUE, draw.line=TRUE, r=3, tooltip.bar = TRUE, ...) {
+dd_bbplot = function(dd, dat=dd_data(dd), cols=dd$var.names, main="",xlab=dd$time.var,ylab="", shocks=dd$shocks, show.shocks = TRUE, rows=1:NROW(dat),xlim=range(rows),ylim=NULL,colors=colors_bb_series(),show.ticks=TRUE,lwd=2,labels=cols,draw.points=TRUE, draw.line=TRUE, r=3,  ...) {
   restore.point("dd_bbplot")
   #dat$t = t.to.date(dat$t)
   library(bbsvg)
@@ -42,8 +43,6 @@ dd_bbplot = function(dd, dat=dd_data(dd), cols=dd$var.names, main="",xlab=dd$tim
   if (show.shocks) {
     bb = dd_bb_annotate_shocks(bb, shocks, rows=rows, dd=dd, T=max(xlim))
   }
-  if (tooltip.bar)
-    bb = bb_series_tooltip_bars(bb, xname=first.non.null(xlab,"t"))
   bb
 }
 dd_bb_annotate_shocks = function(bb, shocks=dd[["shocks"]],dd=NULL, T = first.non.null(dd$T,NROW(bb$data[[1]])), rows = 1:T) {

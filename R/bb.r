@@ -275,6 +275,14 @@ bb_svg_css = function() {
   stroke-width: 3;
 }
 
+.series_tooltip_bar {
+  stroke-opacity: 0;
+}
+
+.series_tooltip_bar:hover {
+  stroke-opacity: 0.3;
+}
+
 
 '
 }

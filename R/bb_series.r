@@ -94,8 +94,8 @@ draw.svg.series = function(svg,obj, level=0, display=NULL,bb=NULL) {
   svg
 }
 
-bb_series_tooltip_bars = function(bb, xname="t", color="yellow", width="auto", alpha=0, style=list(fill=color, "fill-opacity"=alpha), id=paste0("series_tooltip_bars",random.string()), level=-10, round.digits=2, signif.digits=5) {
-  obj = nlist(id, type="series_tooltip_bars",xname,color,width, style, level, round,digits)
+bb_series_tooltip_bars = function(bb, xname="t", color="yellow", lwd=11, style=list(stroke=color, "stroke-width"=lwd), id=paste0("series_tooltip_bars",random.string()), level=11, round.digits=2, signif.digits=5,...) {
+  obj = nlist(id, type="series_tooltip_bars",xname,color,width, style, level, round.digits, signif.digits)
   bb_object(bb,obj)
   
 }
@@ -125,18 +125,18 @@ draw.svg.series_tooltip_bars = function(svg,obj, level=obj$level, display=NULL,b
   })
   
   rx= domain.to.range(x=data[[xcol]], svg=svg)
-  ry = domain.to.range(bb$xrange, svg=svg)
+  ry = domain.to.range(y=bb$yrange, svg=svg)
   
-  style = make_style_arg(style)
+  style = make_style_arg(obj$style)
   
   tooltip = paste0(obj$xname,":", data[[xcol]])
   for (col in ycol) {
-    tooltip = paste0(tooltip,"\n", ycol[1], ":", data[[ycol[1]]])
+    tooltip = paste0(tooltip,"\n", col, ": ", data[[col]])
   }
   
-  txt = paste0('<line x1="',rx,'" x2="',rx,'" y1="',ry[1],'"  y2="',ry[2],'" style="',obj$style,'"> <title>',tooltip,'</title></line>')
-  txt = paste0('<g id="', id,'">', paste0(txt, collapse="\n"),"</g>")
-  svg_add(svg, txt, id)
+  txt = paste0('<line x1="',rx,'" x2="',rx,'" y1="',ry[1],'"  y2="',ry[2],'" style="',style,'" class="series_tooltip_bar"> <title>',tooltip,'</title></line>')
+  txt = paste0('<g id="', obj$id,'">', paste0(txt, collapse="\n"),"</g>")
+  svg_add(svg, txt, obj$id)
   
 }
 
