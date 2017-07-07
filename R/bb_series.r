@@ -40,7 +40,7 @@ examples.bb_seris = function() {
   range(d$inflation)
 }
 
-bb_period = function(bb, from,to=NULL,label=NULL, shade="#333333", alpha=0.3, lwd=1, linetype="dashed", tooltip=label, area.tooltip = tooltip, latex=NULL, font_size=11) {
+bb_period = function(bb, from,to=NULL,label=NULL, shade="#555555", alpha=0.3, lwd=1, linetype="dashed", tooltip=label, area.tooltip = tooltip, latex=NULL, font_size=11) {
   restore.point("bb_period")
   if (!is.null(to))
     bb = bb_area(bb,x = c(from, from,to,to),y=c(bb$y.min,bb$y.max,bb$y.max,bb$y.min),fill = shade, alpha=alpha, tooltip=area.tooltip)
@@ -49,15 +49,15 @@ bb_period = function(bb, from,to=NULL,label=NULL, shade="#333333", alpha=0.3, lw
   bb
 }
 
-bb_series = function(bb, x=data[[xvar]],y=data[[yvar]],data=bb$data, xvar=1,yvar=2,alpha=NULL,color=NULL, class="series",linetype="solid", lwd=NULL, plot_type="l",line.style=list(stroke=color, "stroke-opacity"=alpha, "stroke-width"=lwd,...), point.style = list(fill=color, "fill-opacity"=alpha),
-  dasharray = linetype.to.dasharry(linetype),...,id=paste0("series_",random.string()), level=10) {
+bb_series = function(bb, x=data[[xvar]],y=data[[yvar]],data=bb$data, xvar=1,yvar=2,name= if (is.character(yvar)) yvar else id,alpha=NULL,color=NULL, class="series",linetype="solid", lwd=NULL, plot_type="l",line.style=list(stroke=color, "stroke-opacity"=alpha, "stroke-width"=lwd,...), point.style = list(fill=color, "fill-opacity"=alpha),
+  dasharray = linetype.to.dasharry(linetype),...,id=paste0("series_",random.string()), level=10, draw.line=TRUE, draw.points=FALSE, r=3) {
   restore.point("bb_series")
   
   na.rows = is.na(x) | is.na(y)
   x = x[!na.rows]
   y = y[!na.rows]
   
-  obj = nlist(id, type="series", class=class, x=x,y=y, line.style,point.style,"stroke-dasharray"=dasharray, eval.fields=c("x","y"), level=level)
+  obj = nlist(id, type="series", class=class, x=x,y=y, line.style,point.style,"stroke-dasharray"=dasharray, eval.fields=c("x","y"), level=level, draw.line, draw.points,r, name)
 
   if (is.null(bb$xrange)) {
     bb$xrange = range(x, na.rm=TRUE)
@@ -85,8 +85,59 @@ draw.svg.series = function(svg,obj, level=0, display=NULL,bb=NULL) {
  
   svg = svg_polyline(svg=svg,x=geom$x,y=geom$y, style=obj$line.style,level = level, id=obj$id)
   
-  svg = svg_tooltip_circles(svg, x=geom$x,y=geom$y, alpha=0)
+
+  if (!obj$draw.points) {
+    svg = svg_tooltip_circles(svg, x=geom$x,y=geom$y, alpha=0)
+  } else {
+    svg = svg_tooltip_circles(svg, x=geom$x,y=geom$y, style=obj$point.style, r=obj$r)
+  }
   svg
+}
+
+bb_series_tooltip_bars = function(bb, xname="t", color="yellow", width="auto", alpha=0, style=list(fill=color, "fill-opacity"=alpha), id=paste0("series_tooltip_bars",random.string()), level=-10, round.digits=2, signif.digits=5) {
+  obj = nlist(id, type="series_tooltip_bars",xname,color,width, style, level, round,digits)
+  bb_object(bb,obj)
+  
+}
+
+draw.svg.series_tooltip_bars = function(svg,obj, level=obj$level, display=NULL,bb=NULL) {
+  restore.point("draw.svg.series_tooltip_bars")
+  
+  data = obj[["data"]]
+  if (is.null(data)) {
+    is.ser = sapply(bb$objs, function(obj)obj$type=="series") 
+    ser = bb$objs[is.ser]
+    if (length(ser)==0) return()
+    
+    li = lapply(ser, function(obj) data_frame(name=obj$name,x=obj$geom$x,y=obj$geom$y))
+    df = bind_rows(li)
+    library(tidyr)
+    data = spread(df, key = name, value=y)
+    xcol="x"
+    ycol = colnames(data)[-1]
+  }
+  
+  cols = c(xcol,ycol)
+  data[cols] = lapply(data[cols], function(val) {
+    if (!is.null(obj$round.digits)) val = round(val, obj$round.digits)
+    if (!is.null(obj$signif.digits)) val = signif(val, obj$signif.digits)
+    val
+  })
+  
+  rx= domain.to.range(x=data[[xcol]], svg=svg)
+  ry = domain.to.range(bb$xrange, svg=svg)
+  
+  style = make_style_arg(style)
+  
+  tooltip = paste0(obj$xname,":", data[[xcol]])
+  for (col in ycol) {
+    tooltip = paste0(tooltip,"\n", ycol[1], ":", data[[ycol[1]]])
+  }
+  
+  txt = paste0('<line x1="',rx,'" x2="',rx,'" y1="',ry[1],'"  y2="',ry[2],'" style="',obj$style,'"> <title>',tooltip,'</title></line>')
+  txt = paste0('<g id="', id,'">', paste0(txt, collapse="\n"),"</g>")
+  svg_add(svg, txt, id)
+  
 }
 
 svg_tooltip_circles = function(svg, x, y, tooltip=paste0(round(x,2),",",round(y,2)), r=5, alpha=0.5, color="black", id=paste0("tooltips_", random.string()), style=list(fill=color, "fill-opacity"=alpha)) {

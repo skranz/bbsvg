@@ -22,8 +22,13 @@ bb_to_svg = function(bb, id = first.non.null(bb$id, random.string()), css=bb$css
   bb$values$..y.min = min(yrange)
   bb$values$..y.max = max(yrange)
   
-  bb = bb_compute_objs(bb)
   
+  dr = svg$dr
+  if (is.null(bb$xaxis$ticks)) bb$xaxis$ticks =pretty.ticks(dr$domain$x, n=bb$xaxis$num.ticks)
+  if (is.null(bb$yaxis$ticks)) bb$yaxis$ticks =pretty.ticks(dr$domain$y, n=bb$yaxis$num.ticks)
+
+  
+  bb = bb_compute_objs(bb)
   
   if (length(bb$objs)>0) {
     
@@ -44,6 +49,9 @@ bb_to_svg = function(bb, id = first.non.null(bb$id, random.string()), css=bb$css
     draw.svg.label(svg, obj, bb=bb)
   }
 
+  if (isTRUE(bb$tooltip.bars))
+    draw.series.tooltip.bars(bb=bb,svg=svg)
+  
   do.call(svg_xaxis, c(list(svg=svg), bb$xaxis))
   do.call(svg_yaxis, c(list(svg=svg), bb$yaxis))
   
@@ -57,8 +65,9 @@ bb_to_svg = function(bb, id = first.non.null(bb$id, random.string()), css=bb$css
   Encoding(ssvg) = "UTF-8"
   if (!is.null(outfile)) {
     writeLines(ssvg, outfile,useBytes = TRUE)
+    return(invisible(ssvg))
   }
-  invisible(ssvg)
+  ssvg
 }
 
 compute_bb_margins = function(bb) {

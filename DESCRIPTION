@@ -8,7 +8,7 @@ Maintainer: Sebastian Kranz <sebastian.kranz@uni-ulm.de>
 Description: Create svg graphs for typical blackboard figures that illustrate economic models
 License: GPL >= 2.0
 Depends:
-    dplyr,restorepoint,codeUtils,
+    dplyr, tidyr, restorepoint,codeUtils,
     stringtools, rmdtools,
     whisker,
     RColorBrewer,

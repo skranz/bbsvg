@@ -3,7 +3,7 @@ disable.view.bb = function(disable=TRUE) {
   options(disable_view_bb = disable)
 }
 
-view.bb = function(bb, latexsvg=isTRUE(bb$use.latex), launch.browser = rstudio::viewer, skip = isTRUE(getOption("disable_view_bb")),...) {
+view.bb = function(bb, latexsvg=isTRUE(bb$use.latex), launch.browser = rstudioapi::viewer, skip = isTRUE(getOption("disable_view_bb")),...) {
   restore.point("view.bb")
   if (skip) return()
   library(shinyEvents)

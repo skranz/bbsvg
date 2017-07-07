@@ -45,10 +45,10 @@ bb_xaxis = function(bb,
   labelpos = c("bottom","right","center")[1],
   show.ticks=first.non.null(defaults$show.ticks, TRUE),
   arrow.axis = first.non.null(defaults$arrow.axis, !isTRUE(show.ticks)),
-  defaults=bb$defaults, y.offset = NULL, x.offset = NULL, y="bottom", align=NULL, num.ticks=5, ticks=NULL, tick.size=10
+  defaults=bb$defaults, y.offset = NULL, x.offset = NULL, y="bottom", align=NULL, num.ticks=5, ticks=NULL
 ) {
   restore.point("bb_xaxis")  
-  bb$xaxis = nlist(type="xaxis", show.ticks, arrow.axis, num.ticks, tick.size,y=y)
+  bb$xaxis = nlist(type="xaxis", show.ticks, arrow.axis, num.ticks,y=y)
   if (!is.null(ticks)) bb$xaxis$ticks = ticks
   
   if (!is.null(label)) {
@@ -66,7 +66,7 @@ bb_xaxis = function(bb,
       
       align = first.non.null(align, "center")
       lab.x = max(bb$xrange)
-      y.offset = first.non.null(y.offset, -20)
+      y.offset = first.non.null(y.offset, if (!show.ticks) -20 else -50)
       x.offset = first.non.null(x.offset, 15)
       
     } else if (labelpos == "right") {
@@ -76,7 +76,7 @@ bb_xaxis = function(bb,
       x.offset = first.non.null(x.offset, 20)
     } else {
       align = first.non.null(align, "center")
-      lab.x = max(bb$xrange)
+      lab.x = mean(bb$xrange)
       y.offset = first.non.null(y.offset, -50)
       x.offset = first.non.null(x.offset,0)
     }
@@ -92,9 +92,12 @@ bb_yaxis = function(bb,
   labelpos = c("left","top","center")[1],
   show.ticks=first.non.null(defaults$show.ticks, TRUE),
   arrow.axis = first.non.null(defaults$arrow.axis, !isTRUE(show.ticks)),
-  defaults=bb$defaults, y.offset = NULL, x.offset = NULL, align=NULL, x="left",...
+  defaults=bb$defaults, y.offset = NULL, x.offset = NULL, align=NULL, x="left",ticks=NULL, num.ticks=5, show.grid=FALSE, grid.ticks=ticks, grid.color="#888888",...
 ) {
   restore.point("bb_yaxis")  
+
+  bb$yaxis = nlist(type="yaxis", show.ticks, arrow.axis,x=x,num.ticks)
+  if (!is.null(ticks)) bb$yaxis$ticks = ticks
   
   if (!is.null(label)) {
     if (x=="left") {
@@ -126,7 +129,7 @@ bb_yaxis = function(bb,
     bb = bb_text(bb,label=label, latex=latex, x=lab.x, y=lab.y, x.offset=x.offset, y.offset=y.offset, align=align)
   }
   
-  bb$yaxis = nlist(type="yaxis", show.ticks, arrow.axis,x=x)
+  
   bb
 }
 
