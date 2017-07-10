@@ -23,7 +23,7 @@ view.bb(bb)
 }
 
 
-dd_bbplot = function(dd, dat=dd_data(dd), cols=dd$var.names, main="",xlab=dd$time.var,ylab="", shocks=dd$shocks, show.shocks = TRUE, rows=1:NROW(dat),xlim=range(rows),ylim=NULL,colors=colors_bb_series(),show.ticks=TRUE,lwd=2,labels=cols,draw.points=TRUE, draw.line=TRUE, r=3,  ...) {
+dd_bbplot = function(dd, dat=dd_data(dd), cols=dd$var.names, main="",xlab=dd$time.var,ylab="", shocks=dd$shocks, show.shocks = TRUE, rows=1:NROW(dat),xlim=range(rows),ylim=NULL,colors=colors_bb_series(),show.ticks=TRUE,lwd=2,labels=cols,draw.points=TRUE, draw.line=TRUE, r=3, auto.labels = TRUE,  ...) {
   restore.point("dd_bbplot")
   #dat$t = t.to.date(dat$t)
   library(bbsvg)
@@ -37,7 +37,7 @@ dd_bbplot = function(dd, dat=dd_data(dd), cols=dd$var.names, main="",xlab=dd$tim
   for (i in seq_along(cols)) {
     col = cols[i]
     bb = bb_series(bb,xvar = "t",yvar=col, name=col, color=colors[i],lwd=lwd, draw.points=draw.points, draw.line=draw.line, r=r)
-    if (!is.null(labels))
+    if (!is.null(labels) & auto.labels)
       bb = bb %>% bb_text(label=labels[i], x=max(xlim),y=dat[[col]][max(rows)], x.offset=10, color=colors[i])
   }
   if (show.shocks) {
