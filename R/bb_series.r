@@ -2,9 +2,10 @@ examples.bb_seris = function() {
   setwd("D:/lehre/vwl_einf")
   d = readRDS("mh_de.rds")
 
-  #bb = bb_pane(show.ticks = TRUE, org.width=800) %>%
-  #  bb_series(x=1:5,y=1:5)
-  #view.bb(bb)
+  bb = bb_pane(show.ticks = TRUE, org.width=800) %>%
+    bb_series(x=1:5,y=1:5) %>%
+    bb_series_tooltip_bars(lwd=20)     
+  view.bb(bb)
     
   bb = bb_pane(show.ticks = TRUE, org.width=800, yrange=c(-30,20)) %>%
     bb_hline(y=0) %>%
@@ -17,7 +18,8 @@ examples.bb_seris = function() {
     bb_period(1973,NULL,"1. Oelpreisschock") %>%
     bb_period(1979,NULL,"2. Oelpreisschock") %>%
     bb_period(1990,NULL,"Wiedervereinigung") %>%
-    bb_period(2007,2009+0.5,"Finanzkrise")
+    bb_period(2007,2009+0.5,"Finanzkrise") %>%
+    bb_series_tooltip_bars()  
   view.bb(bb)
   
   bb = bb_pane(show.ticks = TRUE, org.width=800,yrange=c(-10,150)) %>%
@@ -95,7 +97,7 @@ draw.svg.series = function(svg,obj, level=0, display=NULL,bb=NULL) {
 }
 
 bb_series_tooltip_bars = function(bb, xname="t", color="yellow", lwd=11, style=list(stroke=color, "stroke-width"=lwd), id=paste0("series_tooltip_bars",random.string()), level=11, round.digits=2, signif.digits=5,...) {
-  obj = nlist(id, type="series_tooltip_bars",xname,color,width, style, level, round.digits, signif.digits)
+  obj = nlist(id, type="series_tooltip_bars",xname,color, style, level, round.digits, signif.digits)
   bb_object(bb,obj)
   
 }

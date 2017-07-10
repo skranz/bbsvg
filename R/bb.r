@@ -275,12 +275,19 @@ bb_svg_css = function() {
   stroke-width: 3;
 }
 
+@media print {
+  .series_tooltip_bar {
+    stroke-opacity: 0 !important;
+    visibility: hidden;
+  }
+
+}
 .series_tooltip_bar {
-  stroke-opacity: 0;
+  stroke-opacity: 0 !important;
 }
 
 .series_tooltip_bar:hover {
-  stroke-opacity: 0.3;
+  stroke-opacity: 0.3 !important;
 }
 
 
