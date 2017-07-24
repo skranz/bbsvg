@@ -133,12 +133,12 @@ bb_yaxis = function(bb,
   bb
 }
 
-bb_xmarker = function(bb,x=NULL,y2=y,y=NULL,...,linetype="dashed",label=x,latex=NULL, align="center", y.offset=-20, id = random.string()) {
+bb_xmarker = function(bb,x=NULL,y2=y,y=NULL,...,linetype="dashed",label=x,latex=NULL, align="center", y.offset=-20, x.offset=0, id = random.string()) {
   restore.point("bb_xmarker")
   y1=bb$y.min
   y2=first.non.null(y2,max(bb$yrange))
   
-  bb=bb_xtick(bb,latex=latex,label=label,  align=align, y.offset=y.offset,x=x, ..., id=paste0(id,"_text"))
+  bb=bb_xtick(bb,latex=latex,label=label,  align=align, y.offset=y.offset,x.offset=x.offset,x=x, ..., id=paste0(id,"_text"))
   bb = bb_segment(bb,class="marker_line", x1=x, y1=y1,y2=y2, linetype=linetype, ..., id=paste0(id,"_line"))
 }
 
@@ -178,6 +178,13 @@ bb_object = function(bb, obj=NULL,..., id = first.non.null(obj[["id"]],random.st
   bb$objs[[id]] = obj
   bb
   
+}
+
+bb_set_data = function(values = if (!is.null(data)) as.list(data[data.row,,drop=FALSE]) else list(),data = bb$data,data.row = first.non.null(bb$data.row,1)) {
+  bb$data = data
+  bb$data.row = data.row
+  bb$values = values
+  bb
 }
 
 bb_data = function(bb, data) {

@@ -30,17 +30,24 @@ view.bb = function(bb, latexsvg=isTRUE(bb$use.latex), launch.browser = rstudioap
     restore.point("svg_click")
     dom = range.to.domain(x=x,y=y,svg=svg)
     cat(paste0("\n range  x=",x,",y=",y))
-    cat(paste0("\n domain x=",round(dom$x,2),",y=",round(dom$y,2)))
-    msg = paste0('\tbb_text(x=',round(dom$x,2),',y=',round(dom$y,2),',label="", align="left")  %>%')
+    
+    # compute number of rounding digits
+    dw = diff(svg$dr$domain$x)
+    x.round = pmax(round(-log(dw / 1000,base = 10)),1)
+    dh = diff(svg$dr$domain$y)
+    y.round = pmax(round(-log(dh / 1000,base = 10)),1)
+    
+    cat(paste0("\n domain x=",round(dom$x,x.round),",y=",round(dom$y,y.round)))
+    msg = paste0('\tbb_text(x=',round(dom$x,x.round),',y=',round(dom$y,y.round),',label="", align="left", color=NULL)  %>%')
     writeClipboard(msg)
     cat(paste0('\n',msg))
     
-    msg = paste0('\tbb_point(x=',round(dom$x,2),',y=',round(dom$y,2),', r=3)  %>%')
+    msg = paste0('\tbb_point(x=',round(dom$x,x.round),',y=',round(dom$y,y.round),', r=3)  %>%')
     cat(paste0('\n',msg))
 
     prev.xy = app$prev.xy
     if (!is.null(prev.xy)) {
-      msg = paste0('\tbb_segment(x1=',round(prev.xy[1],2),',y1=',round(prev.xy[2],2),',x2=',round(dom$x,2),',y2=',round(dom$y,2),', linetype="solid",color="black")  %>%')
+      msg = paste0('\tbb_arrow(x1=',round(prev.xy[1],x.round),',y1=',round(prev.xy[2],y.round),',x2=',round(dom$x,x.round),',y2=',round(dom$y,y.round),', linetype="solid",color="black")  %>%')
       cat(paste0('\n',msg))
     }
     app$prev.xy = c(x=dom$x,y=dom$y)
