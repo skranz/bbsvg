@@ -92,12 +92,14 @@ bb_yaxis = function(bb,
   labelpos = c("left","top","center")[1],
   show.ticks=first.non.null(defaults$show.ticks, TRUE),
   arrow.axis = first.non.null(defaults$arrow.axis, !isTRUE(show.ticks)),
-  defaults=bb$defaults, y.offset = NULL, x.offset = NULL, align=NULL, x="left",ticks=NULL, num.ticks=5, show.grid=FALSE, grid.ticks=ticks, grid.color="#888888",...
+  defaults=bb$defaults, y.offset = NULL, x.offset = NULL, align=NULL, x="left",ticks=NULL, num.ticks=5, show.grid=FALSE, grid.ticks=ticks, grid.color="#888888", tick.labels=NULL, show.line=TRUE, ...
 ) {
   restore.point("bb_yaxis")  
 
-  bb$yaxis = nlist(type="yaxis", show.ticks, arrow.axis,x=x,num.ticks)
+  bb$yaxis = nlist(type="yaxis", show.ticks, arrow.axis,x=x,num.ticks,show.line, show.grid, grid.ticks, grid.color)
   if (!is.null(ticks)) bb$yaxis$ticks = ticks
+  if (!is.null(tick.labels)) bb$yaxis$tick.labels = tick.labels
+  
   
   if (!is.null(label)) {
     if (x=="left") {

@@ -396,10 +396,10 @@ svg_xaxis = function(svg, id="xaxis", label=NULL, latex = NULL,  y="default", dr
 }
 
 
-svg_yaxis = function(svg, id="yaxis", label=NULL,latex = NULL,x="left", dr=svg$dr, return.string=FALSE, level=100, num.ticks=5, ticks =pretty.ticks(dr$domain$y, n=num.ticks), tick.size = 10, arrow=!show.ticks, show.ticks = TRUE, show.tick.labels=show.ticks,
+svg_yaxis = function(svg, id="yaxis", label=NULL,latex = NULL,x="left", dr=svg$dr, return.string=FALSE, level=100, num.ticks=5, ticks =pretty.ticks(dr$domain$y, n=num.ticks), tick.labels=ticks, tick.size = 10, arrow=!show.ticks, show.ticks = TRUE, show.tick.labels=show.ticks,
   axis.offset = if (show.ticks) 10 else 0, axis.label.offset=20,
   class.group= "axis y-axis",  class.line="axis-main", class.tick="axis-tick",class.tick.label="axis-ticklabel", class.label="axis-label",
-  style.line=NULL, style.tick=NULL,style.tick.label=NULL, style.label=NULL,...  ) {
+  style.line=NULL, style.tick=NULL,style.tick.label=NULL, style.label=NULL, show.line=TRUE,...  ) {
   restore.point("svg_yaxis")
 
   y.ax = dr$range$y
@@ -417,17 +417,21 @@ svg_yaxis = function(svg, id="yaxis", label=NULL,latex = NULL,x="left", dr=svg$d
   }
   x.ax = rep(x,2)
 
-  if (arrow) {
-    arrow.id = paste0(svg$id,"_arrow_head")
+  if (show.line) {
+    if (arrow) {
+      arrow.id = paste0(svg$id,"_arrow_head")
+      svg_def_arrow_head(svg)
+      arrow.li = list("marker-end"=paste0("url(#",arrow.id,")"))
+    } else {
+      arrow.li = NULL
+    }
+  
     svg_def_arrow_head(svg)
-    arrow.li = list("marker-end"=paste0("url(#",arrow.id,")"))
+    line = svg_tag("line", c(nlist(x1=x.ax[1],x2=x.ax[2],y1=y.ax[1],y2=y.ax[2], style=style.line, class=class.line), arrow.li))
   } else {
-    arrow.li = NULL
+    line = NULL
   }
-
-  svg_def_arrow_head(svg)
-  line = svg_tag("line", c(nlist(x1=x.ax[1],x2=x.ax[2],y1=y.ax[1],y2=y.ax[2], style=style.line, class=class.line), arrow.li))
-
+  
   x1.tick = x.ax[1] - tick.size * show.ticks
   x2.tick = x1.tick + tick.size * show.ticks
   y.ticks = domain.to.range(y=ticks,svg = svg)
@@ -438,7 +442,8 @@ svg_yaxis = function(svg, id="yaxis", label=NULL,latex = NULL,x="left", dr=svg$d
   }
 
   if (show.tick.labels) {
-    ti.lab = paste0('<text x="',x1.tick-3,'" y="',y.ticks,'" ', html_arg_str(style=style.tick.label, class=class.tick.label),' text-anchor="end" alignment-baseline="middle">',ticks,"</text>")
+    
+    ti.lab = paste0('<text x="',x1.tick-3,'" y="',y.ticks,'" ', html_arg_str(style=style.tick.label, class=class.tick.label),' text-anchor="end" alignment-baseline="middle">',tick.labels,"</text>")
   } else {
     ti.lab = ""
   }

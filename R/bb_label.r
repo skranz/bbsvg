@@ -1,9 +1,9 @@
 
-bb_text = function(bb, label=NULL,latex=NULL,x=NULL,y=NULL,xrel=NULL, yrel=NULL,align="center", x.offset=0, y.offset=NULL, boxed=FALSE, font_size=14, color=NULL, style=list("font-size"=font_size,"fill"=color),valign=c("center","bottom","top")[1], vertical=FALSE,  ..., id=random.string()) {
+bb_text = function(bb, label=NULL,latex=NULL,x=NULL,y=NULL,xrel=NULL, yrel=NULL,align="center", x.offset=0, y.offset=NULL, boxed=FALSE, font_size=14, color=NULL, style=list("font-size"=font_size,"fill"=color),valign=c("center","bottom","top")[1], vertical=FALSE,  ..., id=random.string(), fill.background=FALSE, background.alpha=0.8, background.color="#ffffff") {
   restore.point("bb_text")
   use.latex = !is.null(latex)
   bb$use.latex = isTRUE(bb$use.latex) | use.latex
-
+  
   if (use.latex) label = NULL
   
   if (is.null(y.offset)) {
@@ -21,6 +21,11 @@ bb_text = function(bb, label=NULL,latex=NULL,x=NULL,y=NULL,xrel=NULL, yrel=NULL,
   
   if (ma$len == 1) {
     obj = nlist(id, label, latex, x,y,xrel,yrel, use.latex,align,label.mode=ifelse(use.latex,"latex","text"), x.offset, y.offset, boxed,style, font_size,vertical=vertical, color, ...)
+    if (fill.background) {
+      bg = text.background.obj(obj, alpha=background.alpha, color=background.color)
+      if (!is.null(bg)) bb$labels[[bg$id]] = bg
+    }
+    
     bb$labels[[id]] = obj
     return(bb)
   }
@@ -29,7 +34,7 @@ bb_text = function(bb, label=NULL,latex=NULL,x=NULL,y=NULL,xrel=NULL, yrel=NULL,
   bid = id
   for (i in seq_len(ma$len)) {
     id = paste0(bid,"_",i)
-    bb = bb_text(bb,id=id, label=ma$li$label[[i]], latex =ma$li$latex[[i]], x=ma$li$x[[i]],y=ma$li$y[[i]], use.latex=use.latex,align=align, x.offset=x.offset, y.offset=y.offset, boxed=boxed,style=style, font_size=font_size, rotate=rotate, ...)
+    bb = bb_text(bb,id=id, label=ma$li$label[[i]], latex =ma$li$latex[[i]], x=ma$li$x[[i]],y=ma$li$y[[i]], use.latex=use.latex,align=align, x.offset=x.offset, y.offset=y.offset, boxed=boxed,style=style, font_size=font_size,vertical=vertical, color=color, fill.background=fill.background, ...)
 
   }
   bb
@@ -37,6 +42,22 @@ bb_text = function(bb, label=NULL,latex=NULL,x=NULL,y=NULL,xrel=NULL, yrel=NULL,
   
 }
 
+
+
+# create a new text object that functions as a 
+# (white) background for the original text object
+text.background.obj = function(obj,color="#ffffff", alpha=0.8, ...) {
+  restore.point("text.background.obj")
+  if (is.null(obj$label))
+    return(NULL)
+  label = sep.lines(obj$label)
+  bg = sapply(label, function(el) paste0(rep("█", nchar(el)), collapse=""))
+  obj$label = mark_utf8(bg)
+  obj$style$fill = color
+  obj$style[["fill-opacity"]] = alpha
+  obj$id = paste0(obj$id,"-background")
+  obj
+}
 
 bb_xtick = function(bb,x=NULL,...,label=x,latex=NULL, align="center", y.offset=-20,y=NULL, id = random.string()) {
   restore.point("bb_xtick")
@@ -74,7 +95,7 @@ compute_bb_label = function(bb, obj) {
   
   geom$label = compute_bb_field(geom$label,bb=bb, obj=obj, character.field = TRUE)
 
-  geom$tooltip = obj$tooltip
+  geom$tooltip = obj[["tooltip"]]
   obj$geom = geom
   obj
 

@@ -51,8 +51,8 @@ bb_period = function(bb, from,to=NULL,label=NULL, shade="#555555", alpha=0.3, lw
   bb
 }
 
-bb_series = function(bb, x=data[[xvar]],y=data[[yvar]],data=bb$data, xvar=1,yvar=2,name= if (is.character(yvar)) yvar else id,alpha=NULL,color=NULL, class="series",linetype="solid", lwd=NULL, plot_type="l",line.style=list(stroke=color, "stroke-opacity"=alpha, "stroke-width"=lwd,...), point.style = list(fill=color, "fill-opacity"=alpha),
-  dasharray = linetype.to.dasharry(linetype),...,id=paste0("series_",random.string()), level=10, draw.line=TRUE, draw.points=FALSE, r=3) {
+bb_series = function(bb, x=data[[xvar]],y=data[[yvar]],data=bb$data, xvar=1,yvar=2,name= if (is.character(yvar)) yvar else id,alpha=NULL,color=NULL, class="series",linetype="solid", lwd=NULL, plot_type="l",line.style=list(stroke=color, "stroke-opacity"=line.alpha, "stroke-width"=lwd,...), point.style = list(fill=color, "fill-opacity"=point.alpha),
+  dasharray = linetype.to.dasharry(linetype),...,id=paste0("series_",random.string()), level=10, draw.line=TRUE, draw.points=FALSE, r=3,line.alpha=alpha, point.alpha=alpha) {
   restore.point("bb_series")
   
   na.rows = is.na(x) | is.na(y)
@@ -96,8 +96,8 @@ draw.svg.series = function(svg,obj, level=0, display=NULL,bb=NULL) {
   svg
 }
 
-bb_series_tooltip_bars = function(bb, xname="t", color="yellow", lwd=11, style=list(stroke=color, "stroke-width"=lwd), id=paste0("series_tooltip_bars",random.string()), level=11, round.digits=2, signif.digits=5,...) {
-  obj = nlist(id, type="series_tooltip_bars",xname,color, style, level, round.digits, signif.digits)
+bb_series_tooltip_bars = function(bb, xname="t", color="yellow", lwd=11, style=list(stroke=color, "stroke-width"=lwd), id=paste0("series_tooltip_bars",random.string()), level=11, round.digits=2, signif.digits=5,tooltip.fun=NULL,tooltip.data=NULL,...) {
+  obj = nlist(id, type="series_tooltip_bars",xname,color, style, level, round.digits, signif.digits, tooltip.fun=tooltip.fun,tooltip.data=tooltip.data)
   bb_object(bb,obj)
   
 }
@@ -105,7 +105,8 @@ bb_series_tooltip_bars = function(bb, xname="t", color="yellow", lwd=11, style=l
 draw.svg.series_tooltip_bars = function(svg,obj, level=obj$level, display=NULL,bb=NULL) {
   restore.point("draw.svg.series_tooltip_bars")
   
-  data = obj[["data"]]
+  #tooltip.data = first.non.null(obj[["data"]],data)
+  data = NULL
   if (is.null(data)) {
     is.ser = sapply(bb$objs, function(obj)obj$type=="series") 
     ser = bb$objs[is.ser]
@@ -131,9 +132,14 @@ draw.svg.series_tooltip_bars = function(svg,obj, level=obj$level, display=NULL,b
   
   style = make_style_arg(obj$style)
   
-  tooltip = paste0(obj$xname,":", data[[xcol]])
-  for (col in ycol) {
-    tooltip = paste0(tooltip,"\n", col, ": ", data[[col]])
+  if (is.null(obj$tooltip.fun)) {
+    tooltip = paste0(obj$xname,":", data[[xcol]])
+    for (col in ycol) {
+      tooltip = paste0(tooltip,"\n", col, ": ", data[[col]])
+    }
+  } else {
+    tooltip.data = first.non.null(obj[["tooltip.data"]],data)
+    tooltip = obj$tooltip.fun(data=tooltip.data, obj=obj)
   }
   
   txt = paste0('<line x1="',rx,'" x2="',rx,'" y1="',ry[1],'"  y2="',ry[2],'" style="',style,'" class="series_tooltip_bar"> <title>',tooltip,'</title></line>')

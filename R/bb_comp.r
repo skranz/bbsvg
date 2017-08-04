@@ -30,7 +30,7 @@ bb_compute_obj = function(bb,obj,i) {
       obj = crop.bb.segment(obj,bb)
     }
   }
-  obj$geom$tooltip = replace.latex.with.unicode(replace.whiskers(obj$tooltip,obj.values(obj, bb)))
+  obj$geom$tooltip = replace.latex.with.unicode(replace.whiskers(obj[["tooltip"]],obj.values(obj, bb)))
   if (!is.null(obj$dx)) {
     xfields = intersect(c("x","x1","x2"),names(obj$geom))
     for (field in xfields) 
