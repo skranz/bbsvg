@@ -80,7 +80,7 @@ svg_from_plot = function(call, width=500, height=400, envir=parent.frame(), bg="
   svg$el.level = el.level
   svg$defs
   svg$code = svg.code
-  svg = svg_def_label_box(svg)
+  #svg = svg_def_label_box(svg)
   svg
 }
 
@@ -110,7 +110,7 @@ new_svg = function(width=500, height=400, vb_w=width, vb_h=height, xlim=c(0,1),y
   ]]>
   </style>
   '))
-  svg_def_label_box(svg)
+  #svg_def_label_box(svg)
   
   svg
 }

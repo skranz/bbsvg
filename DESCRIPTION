@@ -15,4 +15,6 @@ Depends:
     dplyrExtras,
     latexsvg,
     digest
+Sugests:
+  rsvg
 RoxygenNote: 5.0.0

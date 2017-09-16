@@ -1,4 +1,4 @@
-bb_to_svg = function(bb, id = first.non.null(bb$id, random.string()), css=bb$css, width=first.non.null(bb$width,bb$org.width,480), height=first.non.null(bb$height,bb$org.height,320), return.svg.object = FALSE,latexsvg=isTRUE(bb$use.latex),outfile=NULL, ...) {
+bb_to_svg = function(bb, file=NULL, id = first.non.null(bb$id, random.string()), css=bb$css, width=first.non.null(bb$width,bb$org.width,480), height=first.non.null(bb$height,bb$org.height,320), return.svg.object = FALSE,latexsvg=isTRUE(bb$use.latex), ...) {
   restore.point("bb_to_svg")
   
   if (is.null(bb[["xaxis"]]))
@@ -63,8 +63,8 @@ bb_to_svg = function(bb, id = first.non.null(bb$id, random.string()), css=bb$css
     ssvg = latexsvg::latexsvg(ssvg)
   
   Encoding(ssvg) = "UTF-8"
-  if (!is.null(outfile)) {
-    writeLines(ssvg, outfile,useBytes = TRUE)
+  if (!is.null(file)) {
+    writeLines(ssvg, file,useBytes = TRUE)
     return(invisible(ssvg))
   }
   ssvg
@@ -155,10 +155,10 @@ draw.svg.arrow = function(svg,obj, level=-1, display=NULL,bb=NULL, arrow.id = pa
 svg_def_small_arrow_head =  function(svg,id=paste0(svg$id,"_small_arrow_head"), class="arrow_head") {
   svg_add_def(svg=svg,id=id,
     paste0('
-    <marker id="',id,'" class="',class,'" markerWidth="10" markerHeight="10" refx="0" refy="3" orient="auto" markerUnits="userSpaceOnUse">
-      <path d="M0,0 L0,6 L9,3 z" style ="fill: black;"/>
-    </marker>
-    '
+  <marker id="',id,'" class="',class,'" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="userSpaceOnUse">
+    <path d="M0,0 L0,6 L9,3 z" style ="fill: black;"/>
+  </marker>
+'
     )
   )
 }
@@ -167,10 +167,10 @@ svg_def_small_arrow_head =  function(svg,id=paste0(svg$id,"_small_arrow_head"), 
 svg_def_arrow_head =  function(svg,id=paste0(svg$id,"_arrow_head"), class="arrow_head") {
   svg_add_def(svg=svg,id=id,
     paste0('
-    <marker id="',id,'" class="',class,'" markerWidth="10" markerHeight="10" refx="0" refy="3" orient="auto" markerUnits="strokeWidth">
-      <path d="M0,0 L0,6 L9,3 z" style ="fill: black;"/>
-    </marker>
-    '
+  <marker id="',id,'" class="',class,'" markerWidth="10" markerHeight="10" refX="0" refY="3" orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0 L0,6 L9,3 z" style ="fill: black;"/>
+  </marker>
+'
     )
   )
 }
