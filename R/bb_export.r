@@ -17,41 +17,43 @@ examples.export.svg = function() {
 }
 
 
-svg_to_pdf = function(svg=readLines(svg.file),svg.file = NULL,pdf.file=paste0(tools::file_path_sans_ext(svg.file),".pdf"), ...) {
+svg_to_pdf = function(svg.file = NULL,out.file=paste0(tools::file_path_sans_ext(svg.file),".pdf"),svg=merge.lines(readLines(svg.file))) {
   library(rsvg)
+  restore.point("save_to_pdf")
   svg = gsub('href="','xlink:href="',svg, fixed=TRUE)
   svg = gsub('xlink:xlink:href="','xlink:href="',svg, fixed=TRUE)
-  rsvg_pdf(charToRaw(svg),pdf.file)
+  rsvg_pdf(charToRaw(svg),out.file)
 }
 
 
-svg_to_png = function(svg=readLines(svg.file),svg.file = NULL,png.file=paste0(tools::file_path_sans_ext(svg.file),".png"), ...) {
+svg_to_png = function(svg.file = NULL,out.file=paste0(tools::file_path_sans_ext(svg.file),".png"),svg = merge.lines(readLines(svg.file)), ...) {
   library(rsvg)
+  if (length(svg))
   svg = gsub('href="','xlink:href="',svg, fixed=TRUE)
   svg = gsub('xlink:xlink:href="','xlink:href="',svg, fixed=TRUE)
-  rsvg_png(charToRaw(svg),png.file)
+  rsvg_png(charToRaw(svg),out.file)
 }
 
-svg_to_ps = function(svg=readLines(svg.file),svg.file = NULL,ps.file=paste0(tools::file_path_sans_ext(svg.file),".ps"), ...) {
+svg_to_ps = function(svg.file = NULL,out.file=paste0(tools::file_path_sans_ext(svg.file),".ps"),svg=merge.lines(readLines(svg.file)), ...) {
   library(rsvg)  
   svg = gsub('href="','xlink:href="',svg, fixed=TRUE)
   svg = gsub('xlink:xlink:href="','xlink:href="',svg, fixed=TRUE)
-  rsvg_ps(charToRaw(svg),ps.file)
+  rsvg_ps(charToRaw(svg),out.file)
 }
 
 
 bb_to_pdf = function(bb, file,...) {
   library(rsvg)
   svg = bb_to_svg(bb)
-  svg_to_pdf(svg, pdf.file=file)
+  svg_to_pdf(svg=svg, out.file=file)
 }
 
 bb_to_png = function(bb, file,...) {
   svg = bb_to_svg(bb)
-  svg_to_png(svg, png.file=file)
+  svg_to_png(svg=svg, out.file=file)
 }
 
 bb_to_ps = function(bb, file,...) {
   svg = bb_to_svg(bb)
-  svg_to_ps(svg, ps.file=file)
+  svg_to_ps(svg=svg, out.file=file)
 }

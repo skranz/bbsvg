@@ -130,22 +130,18 @@ draw.svg.label = function(svg,obj, display.whisker=FALSE,bb=NULL) {
     anchor = "middle"
     if (obj$align=="right") anchor = "end"
     if (obj$align=="left") anchor ="start"
-    if (isTRUE(geom$boxed)) {
-      svg_boxed_label(svg,x=x,y=y, text=geom$label,id=obj$id, class=class, level=first.non.null(obj$level,100), style=obj$style, to.range = FALSE, "text-anchor"=anchor, tooltip = geom$tooltip, display=display)
-    } else {
-      transform=NULL
-      if (isTRUE(obj$vertical)) 
-        transform=paste0("rotate(-90, ",org.x,", ",org.y,")")
-      svg_text(svg,x=x,y=y, text=geom$label,id=obj$id, class=class, level=first.non.null(obj$level,100), font_size=obj$font_size, style=obj$style, to.range = FALSE, "text-anchor"=anchor,transform=transform, tooltip = geom$tooltip, display=display)
-    }
 
-    class = ifelse(isTRUE(geom$boxed),"boxed_label","bb_text")
+    transform=NULL
+    if (isTRUE(obj$vertical)) 
+      transform=paste0("rotate(-90, ",org.x,", ",org.y,")")
+    svg_text(svg,x=x,y=y, text=geom$label,id=obj$id, class="bb_text", level=first.non.null(obj$level,100), font_size=obj$font_size, style=obj$style, to.range = FALSE, "text-anchor"=anchor,transform=transform, tooltip = geom$tooltip, display=display)
+
   }
 }
 
 
 svg_text = function(svg, x,y, text,id=NULL, class="boxed-label",style=c(nlist("font-size"=font_size), extra.style), font_size=NULL, extra.style=list(), level=1, tooltip=NULL, to.range=TRUE,...) {
-  restore.point("svg_boxed_label")
+  restore.point("svg_text")
 
   text = sep.lines(text)
   if (length(text)>1) {

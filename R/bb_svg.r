@@ -1,4 +1,4 @@
-bb_to_svg = function(bb, file=NULL, id = first.non.null(bb$id, random.string()), css=bb$css, width=first.non.null(bb$width,bb$org.width,480), height=first.non.null(bb$height,bb$org.height,320), return.svg.object = FALSE,latexsvg=isTRUE(bb$use.latex), ...) {
+bb_to_svg = function(bb, file=outfile, id = first.non.null(bb$id, random.string()), css=bb$css, width=first.non.null(bb$width,bb$org.width,480), height=first.non.null(bb$height,bb$org.height,320), return.svg.object = FALSE,latexsvg=isTRUE(bb$use.latex),outfile=NULL, ...) {
   restore.point("bb_to_svg")
   
   if (is.null(bb[["xaxis"]]))

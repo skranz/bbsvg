@@ -117,12 +117,11 @@ new_svg = function(width=500, height=400, vb_w=width, vb_h=height, xlim=c(0,1),y
 
 default_svg_css = function() {
 '
-
 .axis-main {
   stroke: black;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 2;
+  stroke-width: 1.5;
   stroke-opacity: 0.8;
 }
 
@@ -139,14 +138,6 @@ default_svg_css = function() {
   stroke-width: 5;
 }
 
-.axis {
-
-}
-
-.axis-main {
-  stroke-width: 1.5;
-}
-
 .axis-tick {
   stroke-width: 0.5;
 }
@@ -157,22 +148,11 @@ default_svg_css = function() {
   font-weight: normal;
 }
 
-
-.boxed-label {
-  font-size: 10.00pt;
-  font-family: Arial;
-  font-weight: normal;
-  filter: url(#label_box);
-}
-
-
 .axis-label {
   font-size: 11.00pt;
   font-family: Arial;
   font-weight: normal
 }
-
-
 '
 }
 
