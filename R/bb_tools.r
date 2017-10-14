@@ -65,7 +65,7 @@ is.false = function(val) {
   return(!val)
 }
 
-random.string = function(n=1,nchar=14, set=c(letters,LETTERS,0:9)) {
+random.string = function(n=1,nchar=14, set=c(letters,LETTERS)) {
   chars = sample(set,nchar*n, replace = TRUE)
   if (n == 1) return(paste0(chars, collapse=""))
   mat = as.data.frame(matrix(chars, n, nchar))
