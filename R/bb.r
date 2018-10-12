@@ -1,16 +1,19 @@
 ..bb..env = new.env()
 
-bb_pane = function(bb=NULL, id=NULL,  data=NULL, xvar=xy[1], yvar=xy[2], xy=c("x_","y_"), xrange=NULL, yrange=NULL, show.ticks=FALSE, arrow.axis=NULL, xlen=201,ylen=201, org.width = width, org.height=height, margins=NULL,  show=".all", hide=NULL, init.data=FALSE, dataenv=parent.frame(), css=bb_svg_css(), values = if (!is.null(data)) as.list(data[data.row,,drop=FALSE]) else list(), data.row = 1, enclos=parent.frame(), scale=1, width=420, height=300,... ) {
+#' Initiate a bb graphic object
+#' @param bb possibily modify an existing bb object
+#' @export
+bbsvg = bb_pane = function(bb=NULL, id=NULL,  data=NULL, xvar=xy[1], yvar=xy[2], xy=c("x_","y_"), xrange=NULL, yrange=NULL, show.ticks=FALSE, arrow.axis=NULL, xlen=201,ylen=201, org.width = width, org.height=height, margins=NULL,  show=".all", hide=NULL, init.data=FALSE, dataenv=parent.frame(), css=bb_svg_css(), values = if (!is.null(data)) as.list(data[data.row,,drop=FALSE]) else list(), data.row = 1, enclos=parent.frame(), scale=1, width=420, height=300,... ) {
   restore.point("bb_pane")
-  
+
   bb = first.non.null(bb, list())
 
-    
+
   org.width = org.width * scale
   org.height = org.height * scale
-  
+
   bb = copy.non.null.fields(bb,source=nlist(id,data,values, data.row,enclos, xvar,yvar,xrange,yrange,show, hide,xlen,ylen, org.width, org.height, margins, dataenv,css))
-  
+
   bb$xrange = compute_bb_field(bb$xrange, bb=bb)
   bb$yrange = compute_bb_field(bb$yrange, bb=bb)
   if (!is.null(bb$xrange)) {
@@ -29,16 +32,18 @@ bb_pane = function(bb=NULL, id=NULL,  data=NULL, xvar=xy[1], yvar=xy[2], xy=c("x
   }
 
   bb$defaults = copy.non.null.fields(bb$defaults, nlist(show.ticks,arrow.axis,...))
-  
+
   bb = copy.into.null.fields(bb, nlist(objs=list(),labels=list(), geoms=list()))
-  
+
   class(bb) = c("bb_pane","list")
 
   restore.point("bb_pane_2")
-  
+
   bb
 }
 
+#' Specify the x-axis
+#' @param y position of the axis. Either "bottom" (default) or "top" or a number
 bb_xaxis = function(bb,
   label=latex,
   latex = NULL,
@@ -47,28 +52,28 @@ bb_xaxis = function(bb,
   arrow.axis = first.non.null(defaults$arrow.axis, !isTRUE(show.ticks)),
   defaults=bb$defaults, y.offset = NULL, x.offset = NULL, y="bottom", align=NULL, num.ticks=5, ticks=NULL
 ) {
-  restore.point("bb_xaxis")  
+  restore.point("bb_xaxis")
   bb$xaxis = nlist(type="xaxis", show.ticks, arrow.axis, num.ticks,y=y)
   if (!is.null(ticks)) bb$xaxis$ticks = ticks
-  
+
   if (!is.null(label)) {
     if (y=="bottom") {
       lab.y = bb$y.min
-    } else if (x=="right") {
+    } else if (y=="top") {
       lab.y = bb$y.max
     } else if (is.numeric(y)) {
       lab.y = y
     } else {
       lab.y = bb$y.min
     }
-    
+
     if (labelpos == "bottom") {
-      
+
       align = first.non.null(align, "center")
       lab.x = max(bb$xrange)
       y.offset = first.non.null(y.offset, if (!show.ticks) -20 else -50)
       x.offset = first.non.null(x.offset, 15)
-      
+
     } else if (labelpos == "right") {
       align = first.non.null(align, "left")
       lab.x = max(bb$xrange)
@@ -82,10 +87,11 @@ bb_xaxis = function(bb,
     }
     bb = bb_text(bb,label=label, latex=latex, x=lab.x, y=lab.y, x.offset=x.offset, y.offset=y.offset, align=align)
   }
-  
+
   bb
 }
 
+#' Specify the y-axis
 bb_yaxis = function(bb,
   label=latex,
   latex = NULL,
@@ -94,13 +100,13 @@ bb_yaxis = function(bb,
   arrow.axis = first.non.null(defaults$arrow.axis, !isTRUE(show.ticks)),
   defaults=bb$defaults, y.offset = NULL, x.offset = NULL, align=NULL, x="left",ticks=NULL, num.ticks=5, show.grid=FALSE, grid.ticks=ticks, grid.color="#888888", tick.labels=NULL, show.line=TRUE, ...
 ) {
-  restore.point("bb_yaxis")  
+  restore.point("bb_yaxis")
 
   bb$yaxis = nlist(type="yaxis", show.ticks, arrow.axis,x=x,num.ticks,show.line, show.grid, grid.ticks, grid.color)
   if (!is.null(ticks)) bb$yaxis$ticks = ticks
   if (!is.null(tick.labels)) bb$yaxis$tick.labels = tick.labels
-  
-  
+
+
   if (!is.null(label)) {
     if (x=="left") {
       lab.x = bb$x.min
@@ -116,7 +122,7 @@ bb_yaxis = function(bb,
       align = first.non.null(align, "right")
       y.offset = first.non.null(y.offset, 5)
       x.offset = first.non.null(x.offset, -8)
-      
+
     } else if (labelpos == "top") {
       lab.y = max(bb$yrange)
       align = first.non.null(align, "center")
@@ -130,16 +136,16 @@ bb_yaxis = function(bb,
     }
     bb = bb_text(bb,label=label, latex=latex, x=lab.x, y=lab.y, x.offset=x.offset, y.offset=y.offset, align=align)
   }
-  
-  
+
+
   bb
 }
 
-bb_xmarker = function(bb,x=NULL,y2=y,y=NULL,...,linetype="dashed",label=x,latex=NULL, align="center", y.offset=-20, x.offset=0, id = random.string()) {
+bb_xmarker = function(bb,x=NULL,y2=y,y=NULL,y1=bb$y.min,...,linetype="dashed",label=x,latex=NULL, align="center", y.offset=-20, x.offset=0, id = random.string()) {
   restore.point("bb_xmarker")
-  y1=bb$y.min
-  y2=first.non.null(y2,max(bb$yrange))
   
+  y2=first.non.null(y2,max(bb$yrange))
+
   bb=bb_xtick(bb,latex=latex,label=label,  align=align, y.offset=y.offset,x.offset=x.offset,x=x, ..., id=paste0(id,"_text"))
   bb = bb_segment(bb,class="marker_line", x1=x, y1=y1,y2=y2, linetype=linetype, ..., id=paste0(id,"_line"))
 }
@@ -149,7 +155,7 @@ bb_ymarker = function(bb,y=NULL,x2=x,x=NULL,...,linetype="dashed",label=y,latex=
   restore.point("bb_ymarker")
   x1=bb$y.min
   x2=first.non.null(x2,max(bb$xrange))
-  
+
   bb=bb_ytick(bb,latex=latex,label=label,  align=align, y=y, ..., id=paste0(id,"_text"))
   bb = bb_segment(bb,class="marker_line",linetype=linetype, x1=x1, x2=x2,y1=y,y2=y, ..., id=paste0(id,"_line"))
 }
@@ -164,14 +170,17 @@ bb_margins = function(bb, bottom=NULL,left=NULL, top=NULL, right=NULL,...) {
   bb
 }
 
-
+#' Draw a point
 bb_point = function(bb, x,y,r=4, alpha=NULL,color=fill, fill=NULL, class="point", style=list(stroke=color, "fill-color"=fill, "stroke-opacity"=alpha, "fill-opacity"=alpha,...), ..., id=paste0("point_",random.string())) {
   restore.point("bb_point")
   obj = nlist(id, type="point", class, x,y,r, style, eval.fields=c("x","y","r"))
   bb_object(bb, obj)
 }
 
-
+bb_hide_object = function(bb, id) {
+  bb$objs[[id]]$no.draw=TRUE
+  bb
+}
 
 bb_object = function(bb, obj=NULL,..., id = first.non.null(obj[["id"]],random.string())) {
   args = list(...)
@@ -179,9 +188,10 @@ bb_object = function(bb, obj=NULL,..., id = first.non.null(obj[["id"]],random.st
   obj[names(args)] = args
   bb$objs[[id]] = obj
   bb
-  
+
 }
 
+#' Set the current data set
 bb_set_data = function(values = if (!is.null(data)) as.list(data[data.row,,drop=FALSE]) else list(),data = bb$data,data.row = first.non.null(bb$data.row,1)) {
   bb$data = data
   bb$data.row = data.row

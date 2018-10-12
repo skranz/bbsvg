@@ -140,12 +140,14 @@ draw.svg.label = function(svg,obj, display.whisker=FALSE,bb=NULL) {
 }
 
 
-svg_text = function(svg, x,y, text,id=NULL, class="boxed-label",style=c(nlist("font-size"=font_size), extra.style), font_size=NULL, extra.style=list(), level=1, tooltip=NULL, to.range=TRUE,...) {
+svg_text = function(svg, x,y, text,id=NULL, class="boxed-label",style=c(nlist("font-size"=font_size), extra.style), font_size=NULL, extra.style=list(), level=1, tooltip=NULL, to.range=TRUE, math.label=TRUE,...) {
   restore.point("svg_text")
 
   text = sep.lines(text)
   if (length(text)>1) {
     text = multiline.tspans(text,x = x,y=y)
+  } else if (math.label){
+    text = latex.to.textspan(text)
   }
 
   rp = domain.to.range(x=x,y=y,svg=svg, to.range=to.range)

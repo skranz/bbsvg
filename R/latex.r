@@ -23,7 +23,8 @@ latex.to.textspan = function(str) {
   txt = gsub("{{","jJj",txt, fixed=TRUE)
   txt = gsub("}}","hHh",txt, fixed=TRUE)
   txt = gsub("{","",txt, fixed=TRUE)
-  txt = gsub("}"," ",txt, fixed=TRUE)
+  # Without the zero space &#8203; sub- and superscripts wont work
+  txt = gsub("}","&#8203;",txt, fixed=TRUE)
   txt = gsub("  "," ",txt, fixed=TRUE)
   txt = gsub("jJj","{{",txt, fixed=TRUE)
   txt = gsub("hHh","}}",txt, fixed=TRUE)

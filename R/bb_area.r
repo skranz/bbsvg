@@ -36,7 +36,7 @@ bb_area_right_of_curve = function(bb, eq=NULL, curve.id = NULL, fill="#8888ff", 
   bb_area_beside_curve(bb=bb, direction="right", eq=eq, curve.id=curve.id, style=style, id=id, tooltip=tooltip, level=level,...)
 }
 
-bb_area_beside_curve = function(bb, eq=NULL, curve.id = NULL, fill="#8888ff", alpha=0.3,stroke="none", style=nlist(fill=fill, "fill-opacity"=alpha,stroke=stroke, ...), direction=c("above","below","left","right")[1],level=-10, ..., id=random.string(), tooltip=NULL, xrange=bb$xrange, yrange=bb$yrange) {
+bb_area_beside_curve = function(bb, eq=NULL, curve.id = NULL, fill="#8888ff", alpha=0.3,stroke="none", style=nlist(fill=fill, "fill-opacity"=alpha,stroke=stroke, ...), direction=c("above","below","left","right")[1],level=-10, ..., id=random.string(), tooltip=NULL, xmin=bb$xrange[[1]],xmax=bb$xrange[[2]],ymin=bb$yrange[[1]],ymax=bb$yrange[[2]], xrange=c(xmin,xmax), yrange=c(ymin,ymax)) {
   restore.point("bb_area_beside_curve")
   
   if (!is.null(eq)) {

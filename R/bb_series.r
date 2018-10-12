@@ -1,4 +1,4 @@
-examples.bb_seris = function() {
+examples.bb_series = function() {
   setwd("D:/lehre/vwl_einf")
   d = readRDS("mh_de.rds")
 

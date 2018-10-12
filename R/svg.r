@@ -250,9 +250,10 @@ make_style_arg = function(style) {
 }
 
 svg_tag = function(name, args, inner=NULL, .quote='"',tooltip=NULL) {
+  restore.point("svg_tag")
   args = args[!sapply(args, is.null)]
   args$style = make_style_arg(args$style)
-  arg.str = paste0(names(args),"=",.quote,args,.quote, collapse=" ")
+  arg.str = paste0(names(args),"=",.quote,unlist(args),.quote, collapse=" ")
 
   if (!is.null(tooltip)) {
     inner =c(paste0("<title>",tooltip,"</title>"),inner)
@@ -260,7 +261,7 @@ svg_tag = function(name, args, inner=NULL, .quote='"',tooltip=NULL) {
   if (is.null(inner)) {
     str = paste0("<",name," ", arg.str,"/>")
   } else {
-    str = paste0("<",name," ", arg.str,">\n",paste0(inner,collapse="\n"),"</",name,">")
+    str = paste0("<",name," ", arg.str,">\n",paste0(unlist(inner),collapse="\n"),"</",name,">")
   }
   str
 }
