@@ -102,7 +102,7 @@ bb_yaxis = function(bb,
 ) {
   restore.point("bb_yaxis")
 
-  bb$yaxis = nlist(type="yaxis", show.ticks, arrow.axis,x=x,num.ticks,show.line, show.grid, grid.ticks, grid.color)
+  bb$yaxis = nlist(type="yaxis", show.ticks, arrow.axis,x=x,num.ticks,show.line, show.grid, grid.ticks, grid.color, labelpos)
   if (!is.null(ticks)) bb$yaxis$ticks = ticks
   if (!is.null(tick.labels)) bb$yaxis$tick.labels = tick.labels
 

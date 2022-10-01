@@ -318,10 +318,12 @@ specialize.curve.formula = function(eq, xvar, yvar, level=NULL, solve.symbolic =
   vl = find.variables(lhs_)
   vr = find.variables(rhs_)
 
+  curve.funs = find.funs(rhs_)
+  
   yformula_ = xformula_ = NULL
 
   curve.vars = c(vl, vr)
-  is.vertical = ! yvar  %in% curve.vars
+  is.vertical = !yvar  %in% curve.vars
   is.horizontal = ! xvar  %in% curve.vars
 
   # y variable is alone on lhs
@@ -350,7 +352,8 @@ specialize.curve.formula = function(eq, xvar, yvar, level=NULL, solve.symbolic =
   curve = nlist(eq_=eq,yformula_, xformula_,implicit_,is.horizontal, is.vertical,xvar,yvar)
   slope_ = compute.curve.slope(curve)
   slope.vars = find.variables(slope_)
-  is.linear = (!xvar %in% slope.vars) & (! yvar %in% slope.vars) 
+  
+  is.linear = (!xvar %in% slope.vars) & (! yvar %in% slope.vars) & length(curve.funs)==0
   
   ret = nlist(xformula_, yformula_, implicit_,slope_, is.vertical, is.horizontal, is.linear, curve.vars, slope.vars, parnames = setdiff(curve.vars,c(xvar,yvar)))
   ret

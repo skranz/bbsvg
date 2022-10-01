@@ -83,7 +83,7 @@ compute_bb_margins = function(bb) {
   margins = list(
     bottom=ifelse(isTRUE(bb$xaxis$show.ticks),60,50),
     left=ifelse(isTRUE(bb$yaxis$show.ticks),60,50),
-    top=30,
+    top=ifelse(isTRUE(bb$yaxis$labelpos=="top"),40,30),
     right=40
   )
   margins = copy.non.null.fields(dest=margins,source=bb$margins)

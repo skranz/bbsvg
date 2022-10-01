@@ -27,6 +27,10 @@ bb_hline = function(bb,y,alpha=NULL,color=NULL, class="segment",linetype="solid"
   bb_segment(bb,y=y, x1=bb$x.min, x2=bb$x.max, color=color, class=class, alpha=alpha, lwd=lwd, linetype=linetype, style=style, id=id)
 }
 
+bb_vline = function(bb,x,alpha=NULL,color=NULL, class="segment",linetype="solid", lwd=NULL,  style=list(stroke=color, "stroke-opacity"=alpha, "stroke-width"=lwd,...), ..., id=paste0("hline_",random.string())) {
+  bb_segment(bb,x=x, y1=bb$y.min, y2=bb$y.max, color=color, class=class, alpha=alpha, lwd=lwd, linetype=linetype, style=style, id=id)
+}
+
 bb_segment = function(bb, x1=x,x2=x1,y1=y,y2=y1,x,y, alpha=NULL,color=NULL, class="segment",linetype="solid", lwd=NULL, dasharray = linetype.to.dasharry(linetype),  style=list(stroke=color, "stroke-opacity"=alpha, "stroke-width"=lwd,...), ..., tooltip=NULL, id=paste0("segment_",random.string())) {
   restore.point("bb_segment")
 
