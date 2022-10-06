@@ -322,7 +322,7 @@ svg_boxed_label = function(svg, x,y, text,id=NULL, class="boxed-label",style=c(n
 
 
 
-svg_xaxis = function(svg, id="xaxis", label=NULL, latex = NULL,  y="default", dr=svg$dr, return.string=FALSE, level=100, num.ticks=5, ticks =pretty.ticks(dr$domain$x, n=num.ticks), tick.size = 10, arrow=!show.ticks, show.ticks = TRUE, show.tick.labels=show.ticks, class.group= "axis x-axis",  class.line="axis-main", class.tick="axis-tick",class.tick.label="axis-ticklabel", class.label="axis-label", style.line=NULL, style.tick=NULL,style.tick.label=NULL, style.label=NULL, axis.offset=if (show.ticks) 10 else 0, axis.label.offset=if (show.ticks) 30 else 20,...) {
+svg_xaxis = function(svg, id="xaxis", label=NULL, latex = NULL,  y="default", dr=svg$dr, return.string=FALSE, level=100, num.ticks=5, ticks =pretty.ticks(dr$domain$x, n=num.ticks), tick.size = 10, arrow=!show.ticks, show.ticks = TRUE, show.tick.labels=show.ticks, class.group= "axis x-axis",  class.line="axis-main", class.tick="axis-tick",class.tick.label="axis-ticklabel", class.label="axis-label", style.line=NULL, style.tick=NULL,style.tick.label=NULL, style.label=NULL, axis.offset=if (show.ticks) 10 else 0, axis.label.offset=if (show.ticks) 30 else 20, custom.ticks=NULL,...) {
   restore.point("svg_xaxis")
   x.ax = dr$range$x
   if (y=="default" || y == "bottom") {
@@ -360,6 +360,15 @@ svg_xaxis = function(svg, id="xaxis", label=NULL, latex = NULL,  y="default", dr
   } else {
     ti.lab = ""
   }
+  
+  if (!is.null(custom.ticks)) {
+    y1.tick = y.ax[1]
+    y2.tick = y1.tick + tick.size
+    cx.ticks = domain.to.range(x=custom.ticks,svg = svg)
+    cti.str = paste0('<line x1="',cx.ticks,'" x2="',cx.ticks,'" y1="',y1.tick,'" y2="',y2.tick,'" ', html_arg_str(style=style.tick, class=class.tick),'/>')
+  } else {
+    cti.str = ""
+  }
 
   if (!is.null(latex)) {
     label = latex.to.textspan(latex)
@@ -370,7 +379,7 @@ svg_xaxis = function(svg, id="xaxis", label=NULL, latex = NULL,  y="default", dr
     label = svg_tag(name = "text",args=list(x=x.lab,y=y.lab,style=style.label,class=class.label, "text-anchor"="right"),inner=label)
   }
   
-  inner = c(line, ti.str, ti.lab,label)
+  inner = c(line,cti.str, ti.str, ti.lab,label)
 
   g = svg_tag("g", nlist(id,class=class.group),inner=inner)
   svg_add(svg,g,id=id, level=level)
@@ -380,7 +389,7 @@ svg_xaxis = function(svg, id="xaxis", label=NULL, latex = NULL,  y="default", dr
 svg_yaxis = function(svg, id="yaxis", label=NULL,latex = NULL,x="left", dr=svg$dr, return.string=FALSE, level=100, num.ticks=5, ticks =pretty.ticks(dr$domain$y, n=num.ticks), tick.labels=ticks, tick.size = 10, arrow=!show.ticks, show.ticks = TRUE, show.tick.labels=show.ticks,
   axis.offset = if (show.ticks) 10 else 0, axis.label.offset=20,
   class.group= "axis y-axis",  class.line="axis-main", class.tick="axis-tick",class.tick.label="axis-ticklabel", class.label="axis-label",
-  style.line=NULL, style.tick=NULL,style.tick.label=NULL, style.label=NULL, show.line=TRUE,...  ) {
+  style.line=NULL, style.tick=NULL,style.tick.label=NULL, style.label=NULL, show.line=TRUE, custom.ticks=NULL,...  ) {
   restore.point("svg_yaxis")
 
   y.ax = dr$range$y
@@ -422,11 +431,22 @@ svg_yaxis = function(svg, id="yaxis", label=NULL,latex = NULL,x="left", dr=svg$d
     ti.str = ""
   }
 
+
+  
   if (show.tick.labels) {
     
     ti.lab = paste0('<text x="',x1.tick-3,'" y="',y.ticks,'" ', html_arg_str(style=style.tick.label, class=class.tick.label),' text-anchor="end" alignment-baseline="middle">',tick.labels,"</text>")
   } else {
     ti.lab = ""
+  }
+  
+  if (!is.null(custom.ticks)) {
+    x1.tick = x.ax[1] - tick.size 
+    x2.tick = x1.tick + tick.size 
+    cy.ticks = domain.to.range(y=custom.ticks,svg = svg)
+    cti.str = paste0('<line x1="',x1.tick,'" x2="',x2.tick,'" y1="',cy.ticks,'" y2="',cy.ticks,'" ', html_arg_str(style=style.tick, class=class.tick),'/>')
+  } else {
+    cti.str = ""
   }
 
   if (!is.null(latex)) {
@@ -438,7 +458,7 @@ svg_yaxis = function(svg, id="yaxis", label=NULL,latex = NULL,x="left", dr=svg$d
     label = svg_tag(name = "text",args=list(x=x.lab,y=y.lab,style=style.label,class=class.label,"text-anchor"="middle"),inner=label)
   }
   
-  inner = c(line, ti.str, ti.lab,label)
+  inner = c(line,cti.str, ti.str, ti.lab,label)
 
   g = svg_tag("g", nlist(id,class=class.group),inner=inner)
   svg_add(svg,g,id=id, level=level)

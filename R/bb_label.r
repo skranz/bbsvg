@@ -59,23 +59,30 @@ text.background.obj = function(obj,color="#ffffff", alpha=0.8, ...) {
   obj
 }
 
-bb_xtick = function(bb,x=NULL,...,label=x,latex=NULL, align="center", y.offset=-20,y=NULL, id = random.string()) {
+bb_xtick = function(bb,x=NULL,...,label=x,latex=NULL, align="center", y.offset=-20,y=NULL, id = random.string(),  add.tick.line=TRUE) {
   restore.point("bb_xtick")
   y=first.non.null(y,bb$y.min)
   bid = id
   
   bb = bb_text(bb,x=x,y=y,latex=latex,label=label, align=align, y.offset=y.offset, ..., id=id)
+  if (add.tick.line) {
+    bb$custom.xticks = c(bb$custom.xticks,x)
+  }
 
   bb
 }
 
-bb_ytick = function(bb,y=NULL,...,label=y,latex=NULL, align="right", x.offset=-5, x=NULL, id = random.string()) {
+bb_ytick = function(bb,y=NULL,...,label=y,latex=NULL, align="right", x.offset=ifelse(add.tick.line,-15,-5), x=NULL, id = random.string(), add.tick.line=TRUE) {
   restore.point("bb.ytick")
   x=first.non.null(x,bb$x.min)
   #bb = bb_text(bb,x=x,y=y,latex=latex,label=label, align=align, x.offset=x.offset,id=id)
-
   bb = bb_text(bb,x=x,y=y,latex=latex,label=label, align=align, x.offset=x.offset, ..., id=id)
 
+  if (add.tick.line) {
+    bb$custom.yticks = c(bb$custom.yticks,y)
+  }
+  
+  
   bb
 }
 

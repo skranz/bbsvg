@@ -24,8 +24,15 @@ bb_to_svg = function(bb, file=outfile, id = first.non.null(bb$id, random.string(
   
   
   dr = svg$dr
-  if (is.null(bb$xaxis$ticks)) bb$xaxis$ticks =pretty.ticks(dr$domain$x, n=bb$xaxis$num.ticks)
-  if (is.null(bb$yaxis$ticks)) bb$yaxis$ticks =pretty.ticks(dr$domain$y, n=bb$yaxis$num.ticks)
+  
+
+  if (bb$xaxis$show.ticks & is.null(bb$xaxis$ticks)) 
+    bb$xaxis$ticks =pretty.ticks(dr$domain$x, n=bb$xaxis$num.ticks)
+  if (bb$yaxis$show.ticks & is.null(bb$yaxis$ticks)) 
+    bb$yaxis$ticks =pretty.ticks(dr$domain$y, n=bb$yaxis$num.ticks)
+
+  bb$yaxis$custom.ticks = bb$custom.yticks
+  bb$xaxis$custom.ticks = bb$custom.xticks
 
   
   bb = bb_compute_objs(bb)
