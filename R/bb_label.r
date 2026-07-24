@@ -1,4 +1,30 @@
 
+#' Add text to a graphic
+#'
+#' @param bb A `bb` graphic object.
+#' @param label Plain-text label.
+#' @param latex LaTeX label. If supplied, it takes precedence over `label`.
+#' @param x,y Absolute label coordinates.
+#' @param xrel,yrel Relative label coordinates between zero and one.
+#' @param align Horizontal alignment.
+#' @param x.offset,y.offset Pixel offsets from the label coordinates.
+#' @param boxed Whether to use boxed-label styling.
+#' @param font_size Font size in pixels.
+#' @param color Text color.
+#' @param style A list of SVG style properties.
+#' @param valign Vertical alignment.
+#' @param vertical Whether to rotate the text vertically.
+#' @param ... Additional label properties.
+#' @param id A unique object identifier.
+#' @param fill.background Whether to draw a background behind plain text.
+#' @param background.alpha Background opacity.
+#' @param background.color Background color.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(0, 4), yrange = c(0, 4)) |>
+#'   bb_text("Equilibrium", x = 2, y = 2)
+#' }
 bb_text = function(bb, label=NULL,latex=NULL,x=NULL,y=NULL,xrel=NULL, yrel=NULL,align="center", x.offset=0, y.offset=NULL, boxed=FALSE, font_size=14, color=NULL, style=list("font-size"=font_size,"fill"=color),valign=c("center","bottom","top")[1], vertical=FALSE,  ..., id=random.string(), fill.background=FALSE, background.alpha=0.8, background.color="#ffffff") {
   restore.point("bb_text")
   use.latex = !is.null(latex)
@@ -59,6 +85,24 @@ text.background.obj = function(obj,color="#ffffff", alpha=0.8, ...) {
   obj
 }
 
+#' Add a custom x-axis tick
+#'
+#' @param bb A `bb` graphic object.
+#' @param x Horizontal tick coordinate.
+#' @param ... Additional arguments passed to [bb_text()].
+#' @param label Plain-text tick label.
+#' @param latex LaTeX tick label.
+#' @param align Horizontal label alignment.
+#' @param y.offset Vertical pixel offset.
+#' @param y Vertical coordinate of the label.
+#' @param id A unique object identifier.
+#' @param add.tick.line Whether to add a tick mark to the axis.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(0, 4), yrange = c(0, 4)) |>
+#'   bb_xtick(x = 2, label = "two")
+#' }
 bb_xtick = function(bb,x=NULL,...,label=x,latex=NULL, align="center", y.offset=-20,y=NULL, id = random.string(),  add.tick.line=TRUE) {
   restore.point("bb_xtick")
   y=first.non.null(y,bb$y.min)
@@ -72,6 +116,24 @@ bb_xtick = function(bb,x=NULL,...,label=x,latex=NULL, align="center", y.offset=-
   bb
 }
 
+#' Add a custom y-axis tick
+#'
+#' @param bb A `bb` graphic object.
+#' @param y Vertical tick coordinate.
+#' @param ... Additional arguments passed to [bb_text()].
+#' @param label Plain-text tick label.
+#' @param latex LaTeX tick label.
+#' @param align Horizontal label alignment.
+#' @param x.offset Horizontal pixel offset.
+#' @param x Horizontal coordinate of the label.
+#' @param id A unique object identifier.
+#' @param add.tick.line Whether to add a tick mark to the axis.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(0, 4), yrange = c(0, 4)) |>
+#'   bb_ytick(y = 2, label = "two")
+#' }
 bb_ytick = function(bb,y=NULL,...,label=y,latex=NULL, align="right", x.offset=ifelse(add.tick.line,-15,-5), x=NULL, id = random.string(), add.tick.line=TRUE) {
   restore.point("bb.ytick")
   x=first.non.null(x,bb$x.min)

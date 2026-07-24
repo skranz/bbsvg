@@ -42,17 +42,49 @@ svg_to_ps = function(svg.file = NULL,out.file=paste0(tools::file_path_sans_ext(s
 }
 
 
+#' Export a graphic to PDF
+#'
+#' @param bb A `bb` graphic object.
+#' @param file Output file path.
+#' @param ... Additional arguments passed through the export pipeline.
+#' @return The result returned by the SVG conversion function, invisibly where
+#'   applicable.
+#' @examples
+#' \dontrun{
+#' bb <- bb_pane(xrange = c(0, 1), yrange = c(0, 1))
+#' bb_to_pdf(bb, "figure.pdf")
+#' }
 bb_to_pdf = function(bb, file,...) {
   library(rsvg)
   svg = bb_to_svg(bb)
   svg_to_pdf(svg=svg, out.file=file)
 }
 
+#' Export a graphic to PNG
+#'
+#' @inheritParams bb_to_pdf
+#' @return The result returned by the SVG conversion function, invisibly where
+#'   applicable.
+#' @examples
+#' \dontrun{
+#' bb <- bb_pane(xrange = c(0, 1), yrange = c(0, 1))
+#' bb_to_png(bb, "figure.png")
+#' }
 bb_to_png = function(bb, file,...) {
   svg = bb_to_svg(bb)
   svg_to_png(svg=svg, out.file=file)
 }
 
+#' Export a graphic to PostScript
+#'
+#' @inheritParams bb_to_pdf
+#' @return The result returned by the SVG conversion function, invisibly where
+#'   applicable.
+#' @examples
+#' \dontrun{
+#' bb <- bb_pane(xrange = c(0, 1), yrange = c(0, 1))
+#' bb_to_ps(bb, "figure.ps")
+#' }
 bb_to_ps = function(bb, file,...) {
   svg = bb_to_svg(bb)
   svg_to_ps(svg=svg, out.file=file)

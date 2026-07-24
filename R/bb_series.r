@@ -42,6 +42,26 @@ examples.bb_series = function() {
   range(d$inflation)
 }
 
+#' Mark a period on a series plot
+#'
+#' @param bb A `bb` graphic object.
+#' @param from Start coordinate.
+#' @param to Optional end coordinate. If supplied, the period is shaded.
+#' @param label Plain-text period label.
+#' @param shade Shading color.
+#' @param alpha Shading opacity.
+#' @param lwd Boundary-line width.
+#' @param linetype Boundary-line type.
+#' @param tooltip Boundary tooltip text.
+#' @param area.tooltip Shaded-area tooltip text.
+#' @param latex Optional LaTeX label.
+#' @param font_size Label font size.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(2000, 2010), yrange = c(0, 5)) |>
+#'   bb_period(2003, 2005, "Event")
+#' }
 bb_period = function(bb, from,to=NULL,label=NULL, shade="#555555", alpha=0.3, lwd=1, linetype="dashed", tooltip=label, area.tooltip = tooltip, latex=NULL, font_size=11) {
   restore.point("bb_period")
   if (!is.null(to))
@@ -51,6 +71,33 @@ bb_period = function(bb, from,to=NULL,label=NULL, shade="#555555", alpha=0.3, lw
   bb
 }
 
+#' Add a data series
+#'
+#' @param bb A `bb` graphic object.
+#' @param x,y Series coordinates.
+#' @param data Data frame containing the series.
+#' @param xvar,yvar Column names or positions used to obtain `x` and `y`.
+#' @param name Series name used in tooltips.
+#' @param alpha Overall opacity.
+#' @param color Series color.
+#' @param class SVG class name.
+#' @param linetype Line type.
+#' @param lwd Line width.
+#' @param plot_type Plot type descriptor.
+#' @param line.style,point.style Lists of SVG style properties.
+#' @param dasharray SVG stroke-dasharray value.
+#' @param ... Additional SVG style properties.
+#' @param id A unique object identifier.
+#' @param level Drawing level.
+#' @param draw.line,draw.points Whether to draw lines and points.
+#' @param r Point radius.
+#' @param line.alpha,point.alpha Line and point opacity.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane() |>
+#'   bb_series(x = 1:5, y = c(1, 3, 2, 4, 5), color = "blue")
+#' }
 bb_series = function(bb, x=data[[xvar]],y=data[[yvar]],data=bb$data, xvar=1,yvar=2,name= if (is.character(yvar)) yvar else id,alpha=NULL,color=NULL, class="series",linetype="solid", lwd=NULL, plot_type="l",line.style=list(stroke=color, "stroke-opacity"=line.alpha, "stroke-width"=lwd,...), point.style = list(fill=color, "fill-opacity"=point.alpha),
   dasharray = linetype.to.dasharry(linetype),...,id=paste0("series_",random.string()), level=10, draw.line=TRUE, draw.points=FALSE, r=3,line.alpha=alpha, point.alpha=alpha) {
   restore.point("bb_series")
@@ -96,6 +143,26 @@ draw.svg.series = function(svg,obj, level=0, display=NULL,bb=NULL) {
   svg
 }
 
+#' Add tooltip bars for data series
+#'
+#' @param bb A `bb` graphic object.
+#' @param xname Label used for the horizontal coordinate in tooltips.
+#' @param color Bar color.
+#' @param lwd Bar width.
+#' @param style A list of SVG style properties.
+#' @param id A unique object identifier.
+#' @param level Drawing level.
+#' @param round.digits,signif.digits Numeric formatting controls.
+#' @param tooltip.fun Optional function that creates tooltip text.
+#' @param tooltip.data Optional data passed to `tooltip.fun`.
+#' @param ... Additional object properties.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane() |>
+#'   bb_series(x = 1:5, y = 1:5) |>
+#'   bb_series_tooltip_bars()
+#' }
 bb_series_tooltip_bars = function(bb, xname="t", color="yellow", lwd=11, style=list(stroke=color, "stroke-width"=lwd), id=paste0("series_tooltip_bars",random.string()), level=11, round.digits=2, signif.digits=5,tooltip.fun=NULL,tooltip.data=NULL,...) {
   obj = nlist(id, type="series_tooltip_bars",xname,color, style, level, round.digits, signif.digits, tooltip.fun=tooltip.fun,tooltip.data=tooltip.data)
   bb_object(bb,obj)

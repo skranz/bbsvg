@@ -26,6 +26,52 @@ bb_yaxis(
   ...
 )
 }
+\arguments{
+\item{bb}{A `bb` graphic object.}
+
+\item{label}{Plain-text axis label.}
+
+\item{latex}{Optional LaTeX axis label.}
+
+\item{labelpos}{Label position: `"left"`, `"top"`, or `"center"`.}
+
+\item{show.ticks}{Whether to draw ticks and tick labels.}
+
+\item{arrow.axis}{Whether to draw an arrow-headed axis.}
+
+\item{defaults}{Graphic defaults used to resolve axis settings.}
+
+\item{y.offset, x.offset}{Label offsets in pixels.}
+
+\item{align}{Label alignment.}
+
+\item{x}{Axis position: `"left"`, `"right"`, or a numeric coordinate.}
+
+\item{ticks}{Optional explicit tick coordinates.}
+
+\item{num.ticks}{Desired number of automatically generated ticks.}
+
+\item{show.grid}{Whether to draw horizontal grid lines.}
+
+\item{grid.ticks}{Coordinates of grid lines.}
+
+\item{grid.color}{Grid-line color.}
+
+\item{tick.labels}{Optional custom tick labels.}
+
+\item{show.line}{Whether to draw the main axis line.}
+
+\item{...}{Additional axis settings.}
+}
+\value{
+The modified `bb` object.
+}
 \description{
 Specify the y-axis
+}
+\examples{
+\dontrun{
+bb_pane(xrange = c(0, 5), yrange = c(0, 5)) |>
+  bb_yaxis(label = "Price")
+}
 }

@@ -1,9 +1,50 @@
+#' Add an isoquant through a point
+#'
+#' @param bb A `bb` graphic object.
+#' @param Q A production function or expression accepted by
+#'   `isoquant.slope()`.
+#' @param x,y Coordinates of a point on the isoquant.
+#' @param ... Additional arguments passed to [bb_slopecurve()].
+#' @param id A unique object identifier.
+#' @param xvar,yvar Names of the horizontal and vertical variables.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(0, 5), yrange = c(0, 5)) |>
+#'   bb_isoquant(Q = "x_ * y_", x = 2, y = 2)
+#' }
 bb_isoquant = function(bb, Q,x,y,...,id=paste0("isoquant_",random.string()),xvar=bb$xvar,yvar=bb$yvar) {
   restore.point("bb_isoquant")
   slope = isoquant.slope(Q,xvar,yvar)
   bb_slopecurve(bb,x=x,y=y,slope=slope,xvar=xvar,yvar=yvar,id=id,...)
 }
 
+#' Add a curve defined by its slope
+#'
+#' Numerically traces a curve through a supplied point using a slope
+#' expression.
+#'
+#' @param bb A `bb` graphic object.
+#' @param x,y Coordinates of a point on the curve.
+#' @param slope A slope expression or character string.
+#' @param color Stroke color.
+#' @param lwd Stroke width.
+#' @param alpha Stroke opacity.
+#' @param style A list of SVG style properties.
+#' @param x.move,y.move Offsets applied to the computed coordinates.
+#' @param xrange,yrange Two-element coordinate ranges.
+#' @param var.funs Optional variable functions used in computations.
+#' @param tooltip Optional tooltip text.
+#' @param ... Additional SVG style properties.
+#' @param data Optional data used to evaluate expressions.
+#' @param id A unique object identifier.
+#' @param xvar,yvar Names of the horizontal and vertical variables.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(0, 5), yrange = c(0, 5)) |>
+#'   bb_slopecurve(x = 2, y = 2, slope = "-y_ / x_")
+#' }
 bb_slopecurve = function(bb,x,y,slope,color=NULL, lwd=NULL, alpha=NULL, style=nlist(stroke=color, stroke_width=lwd,"stroke-opacity"=alpha,...), x.move=0, y.move=0, xrange=bb$xrange, yrange=bb$yrange, var.funs=NULL,tooltip=NULL,..., data=NULL, id=paste0("slopecurve_",random.string()),xvar=bb$xvar,yvar=bb$yvar) {
   restore.point("bb_slopecurve")
   
@@ -22,6 +63,32 @@ bb_slopecurve = function(bb,x,y,slope,color=NULL, lwd=NULL, alpha=NULL, style=nl
 
 
 
+#' Add a curve
+#'
+#' @param bb A `bb` graphic object.
+#' @param id A unique object identifier.
+#' @param eq An equation supplied as a character string.
+#' @param latex Optional LaTeX curve label.
+#' @param label Optional plain-text curve label.
+#' @param data Optional data used to evaluate the equation.
+#' @param color Stroke color.
+#' @param lwd Stroke width.
+#' @param style A list of SVG style properties.
+#' @param var.funs Optional variable functions used to transform the equation.
+#' @param labpos Optional two-element label position.
+#' @param labx,laby Optional label coordinates.
+#' @param tooltip Optional tooltip text.
+#' @param dx,dy Coordinate offsets.
+#' @param no.draw If `TRUE`, compute the curve without drawing it.
+#' @param xrange,yrange Two-element coordinate ranges.
+#' @param alpha Stroke opacity.
+#' @param ... Additional SVG style properties.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(0, 5), yrange = c(0, 5)) |>
+#'   bb_curve(eq = "y_ = 4 / x_", color = "blue")
+#' }
 bb_curve = function(bb,id=random.string(),eq,latex=NULL, label=NULL, data=NULL,color=NULL, lwd=NULL, style=nlist(stroke=color, stroke_width=lwd,"stroke-opacity"=alpha,...), var.funs=NULL,labpos=NULL,labx=NULL, laby=NULL,tooltip=NULL,dy=NULL,dx=NULL,no.draw=FALSE, xrange=bb$xrange, yrange=bb$yrange,alpha=NULL,...) {
   restore.point("bb_curve")
   
@@ -70,6 +137,21 @@ bb_curve = function(bb,id=random.string(),eq,latex=NULL, label=NULL, data=NULL,c
 
 
 # compute.curve.gcurve
+#' Compute a curve's coordinates
+#'
+#' @param bb A `bb` graphic object.
+#' @param curve A curve specification.
+#' @param values Values used to evaluate the curve equation.
+#' @param xlen,ylen Numbers of grid points in each direction.
+#' @param xrange,yrange Two-element coordinate ranges.
+#' @param ... Reserved for additional computation options.
+#' @return The curve specification with computed geometry.
+#' @examples
+#' \dontrun{
+#' bb <- bb_pane(xrange = c(0, 5), yrange = c(0, 5)) |>
+#'   bb_curve(id = "diagonal", eq = "y_ = x_")
+#' bb_compute_curve(bb, bb$objs$diagonal)
+#' }
 bb_compute_curve = function(bb,curve,values=bb$values, xlen=bb$xlen, ylen=bb$ylen,xrange=first.non.null(curve$xrange,bb$xrange),yrange=first.non.null(curve$yrange,bb$yrange), ...) {
   restore.point("bb_compute_curve")
   
@@ -248,6 +330,18 @@ draw.svg.curve = function(svg,obj,level=first.non.null(obj$level,0), display=NUL
 }
 
 # compute.curve.gcurve
+#' Compute a slope-defined curve's coordinates
+#'
+#' @param bb A `bb` graphic object.
+#' @param obj A slope-curve specification.
+#' @param ... Reserved for additional computation options.
+#' @return The curve specification with computed geometry.
+#' @examples
+#' \dontrun{
+#' bb <- bb_pane(xrange = c(0, 5), yrange = c(0, 5)) |>
+#'   bb_slopecurve(x = 2, y = 2, slope = "-y_ / x_")
+#' bb_compute_slopecurve(bb, bb$objs[[1]])
+#' }
 bb_compute_slopecurve = function(bb,obj, ...) {
   restore.point("bb_compute_curve")
 

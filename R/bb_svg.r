@@ -1,3 +1,22 @@
+#' Render a graphic as SVG
+#'
+#' @param bb A `bb` graphic object.
+#' @param file Optional output file path.
+#' @param id SVG element identifier.
+#' @param css CSS included in the SVG.
+#' @param width,height Output dimensions in pixels.
+#' @param return.svg.object If `TRUE`, return the intermediate SVG object.
+#' @param latexsvg Whether to convert LaTeX labels with `latexsvg`.
+#' @param outfile Deprecated alternative output-file argument.
+#' @param ... Reserved for additional rendering options.
+#' @return An SVG character string, or the intermediate SVG object when
+#'   `return.svg.object` is `TRUE`.
+#' @examples
+#' \dontrun{
+#' bb <- bb_pane(xrange = c(0, 1), yrange = c(0, 1)) |>
+#'   bb_point(0.5, 0.5)
+#' bb_to_svg(bb)
+#' }
 bb_to_svg = function(bb, file=outfile, id = first.non.null(bb$id, random.string()), css=bb$css, width=first.non.null(bb$width,bb$org.width,480), height=first.non.null(bb$height,bb$org.height,320), return.svg.object = FALSE,latexsvg=isTRUE(bb$use.latex),outfile=NULL, ...) {
   restore.point("bb_to_svg")
   

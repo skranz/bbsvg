@@ -2,7 +2,7 @@
 % Please edit documentation in R/bb.r
 \name{bb_point}
 \alias{bb_point}
-\title{Draw a point}
+\title{Add a point}
 \usage{
 bb_point(
   bb,
@@ -19,6 +19,36 @@ bb_point(
   id = paste0("point_", random.string())
 )
 }
+\arguments{
+\item{bb}{A `bb` graphic object.}
+
+\item{x, y}{Point coordinates.}
+
+\item{r}{Point radius in pixels.}
+
+\item{alpha}{Point opacity.}
+
+\item{color}{Stroke color.}
+
+\item{fill}{Fill color.}
+
+\item{class}{SVG class name.}
+
+\item{style}{A list of SVG style properties.}
+
+\item{...}{Additional SVG style properties.}
+
+\item{id}{A unique object identifier.}
+}
+\value{
+The modified `bb` object.
+}
 \description{
-Draw a point
+Add a point
+}
+\examples{
+\dontrun{
+bb_pane(xrange = c(0, 5), yrange = c(0, 5)) |>
+  bb_point(x = 2, y = 3)
+}
 }

@@ -1,8 +1,38 @@
 ..bb..env = new.env()
 
-#' Initiate a bb graphic object
-#' @param bb possibily modify an existing bb object
+#' Create a blackboard-style graphic
+#'
+#' Creates a plotting pane or modifies an existing `bb` graphic object.
+#'
+#' @name bb_pane
+#' @aliases bbsvg
+#' @param bb An optional existing `bb` object to modify.
+#' @param id An optional graphic identifier.
+#' @param data Optional data frame used to evaluate graphic expressions.
+#' @param xvar,yvar Names of the horizontal and vertical variables.
+#' @param xy A two-element character vector used as the default variable names.
+#' @param xrange,yrange Two-element coordinate ranges.
+#' @param show.ticks Whether axes show ticks by default.
+#' @param arrow.axis Whether axes use arrow heads by default.
+#' @param xlen,ylen Numbers of grid points used for curve computation.
+#' @param org.width,org.height Unscaled graphic dimensions in pixels.
+#' @param margins Optional plot margins in pixels.
+#' @param show,hide Object selectors controlling visibility.
+#' @param init.data Whether to initialize data-dependent state.
+#' @param dataenv Environment in which data expressions are evaluated.
+#' @param css CSS included in the SVG.
+#' @param values Named values used to evaluate expressions.
+#' @param data.row Row of `data` used to initialize `values`.
+#' @param enclos Enclosing environment for expression evaluation.
+#' @param scale Scale factor applied to the original dimensions.
+#' @param width,height Output dimensions in pixels.
+#' @param ... Additional graphic defaults.
+#' @return A `bb_pane` object.
 #' @export
+#' @examples
+#' \dontrun{
+#' bb <- bb_pane(xrange = c(0, 10), yrange = c(0, 5))
+#' }
 bbsvg = bb_pane = function(bb=NULL, id=NULL,  data=NULL, xvar=xy[1], yvar=xy[2], xy=c("x_","y_"), xrange=NULL, yrange=NULL, show.ticks=FALSE, arrow.axis=NULL, xlen=201,ylen=201, org.width = width, org.height=height, margins=NULL,  show=".all", hide=NULL, init.data=FALSE, dataenv=parent.frame(), css=bb_svg_css(), values = if (!is.null(data)) as.list(data[data.row,,drop=FALSE]) else list(), data.row = 1, enclos=parent.frame(), scale=1, width=420, height=300,... ) {
   restore.point("bb_pane")
 
@@ -43,7 +73,25 @@ bbsvg = bb_pane = function(bb=NULL, id=NULL,  data=NULL, xvar=xy[1], yvar=xy[2],
 }
 
 #' Specify the x-axis
-#' @param y position of the axis. Either "bottom" (default) or "top" or a number
+#'
+#' @param bb A `bb` graphic object.
+#' @param label Plain-text axis label.
+#' @param latex Optional LaTeX axis label.
+#' @param labelpos Label position: `"bottom"`, `"right"`, or `"center"`.
+#' @param show.ticks Whether to draw ticks and tick labels.
+#' @param arrow.axis Whether to draw an arrow-headed axis.
+#' @param defaults Graphic defaults used to resolve axis settings.
+#' @param y.offset,x.offset Label offsets in pixels.
+#' @param y Axis position: `"bottom"`, `"top"`, or a numeric coordinate.
+#' @param align Label alignment.
+#' @param num.ticks Desired number of automatically generated ticks.
+#' @param ticks Optional explicit tick coordinates.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(0, 5), yrange = c(0, 5)) |>
+#'   bb_xaxis(label = "Quantity")
+#' }
 bb_xaxis = function(bb,
   label=latex,
   latex = NULL,
@@ -92,6 +140,31 @@ bb_xaxis = function(bb,
 }
 
 #' Specify the y-axis
+#'
+#' @param bb A `bb` graphic object.
+#' @param label Plain-text axis label.
+#' @param latex Optional LaTeX axis label.
+#' @param labelpos Label position: `"left"`, `"top"`, or `"center"`.
+#' @param show.ticks Whether to draw ticks and tick labels.
+#' @param arrow.axis Whether to draw an arrow-headed axis.
+#' @param defaults Graphic defaults used to resolve axis settings.
+#' @param y.offset,x.offset Label offsets in pixels.
+#' @param align Label alignment.
+#' @param x Axis position: `"left"`, `"right"`, or a numeric coordinate.
+#' @param ticks Optional explicit tick coordinates.
+#' @param num.ticks Desired number of automatically generated ticks.
+#' @param show.grid Whether to draw horizontal grid lines.
+#' @param grid.ticks Coordinates of grid lines.
+#' @param grid.color Grid-line color.
+#' @param tick.labels Optional custom tick labels.
+#' @param show.line Whether to draw the main axis line.
+#' @param ... Additional axis settings.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(0, 5), yrange = c(0, 5)) |>
+#'   bb_yaxis(label = "Price")
+#' }
 bb_yaxis = function(bb,
   label=latex,
   latex = NULL,
@@ -141,6 +214,24 @@ bb_yaxis = function(bb,
   bb
 }
 
+#' Add a vertical marker
+#'
+#' @param bb A `bb` graphic object.
+#' @param x Horizontal marker coordinate.
+#' @param y2,y1 End coordinates of the marker line.
+#' @param y Optional shorthand for `y2`.
+#' @param ... Additional arguments passed to the tick and segment.
+#' @param linetype Marker-line type.
+#' @param label Plain-text marker label.
+#' @param latex Optional LaTeX marker label.
+#' @param align Label alignment.
+#' @param y.offset,x.offset Label offsets in pixels.
+#' @param id A base identifier for the marker objects.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(0, 5), yrange = c(0, 5)) |> bb_xmarker(x = 2)
+#' }
 bb_xmarker = function(bb,x=NULL,y2=y,y=NULL,y1=bb$y.min,...,linetype="dashed",label=x,latex=NULL, align="center", y.offset=-20, x.offset=0, id = random.string()) {
   restore.point("bb_xmarker")
   
@@ -151,6 +242,23 @@ bb_xmarker = function(bb,x=NULL,y2=y,y=NULL,y1=bb$y.min,...,linetype="dashed",la
 }
 
 
+#' Add a horizontal marker
+#'
+#' @param bb A `bb` graphic object.
+#' @param y Vertical marker coordinate.
+#' @param x2 Ending horizontal coordinate.
+#' @param x Optional shorthand for `x2`.
+#' @param ... Additional arguments passed to the tick and segment.
+#' @param linetype Marker-line type.
+#' @param label Plain-text marker label.
+#' @param latex Optional LaTeX marker label.
+#' @param align Label alignment.
+#' @param id A base identifier for the marker objects.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(0, 5), yrange = c(0, 5)) |> bb_ymarker(y = 2)
+#' }
 bb_ymarker = function(bb,y=NULL,x2=x,x=NULL,...,linetype="dashed",label=y,latex=NULL, align="right", id = random.string()) {
   restore.point("bb_ymarker")
   x1=bb$y.min
@@ -162,26 +270,77 @@ bb_ymarker = function(bb,y=NULL,x2=x,x=NULL,...,linetype="dashed",label=y,latex=
 
 
 
-#' Specify margins in pixels for bb object
+#' Specify graphic margins
+#'
+#' @param bb A `bb` graphic object.
+#' @param bottom,left,top,right Margins in pixels. `NULL` preserves the current
+#'   value.
+#' @param ... Reserved for additional margin settings.
+#' @return The modified `bb` object.
 #' @export
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(0, 5), yrange = c(0, 5)) |>
+#'   bb_margins(left = 60, bottom = 50)
+#' }
 bb_margins = function(bb, bottom=NULL,left=NULL, top=NULL, right=NULL,...) {
   margins = nlist(bottom, left, top, right)
   bb$margins = copy.non.null.fields(bb[["margins"]], margins)
   bb
 }
 
-#' Draw a point
+#' Add a point
+#'
+#' @param bb A `bb` graphic object.
+#' @param x,y Point coordinates.
+#' @param r Point radius in pixels.
+#' @param alpha Point opacity.
+#' @param color Stroke color.
+#' @param fill Fill color.
+#' @param class SVG class name.
+#' @param style A list of SVG style properties.
+#' @param ... Additional SVG style properties.
+#' @param id A unique object identifier.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(0, 5), yrange = c(0, 5)) |>
+#'   bb_point(x = 2, y = 3)
+#' }
 bb_point = function(bb, x,y,r=4, alpha=NULL,color=fill, fill=NULL, class="point", style=list(stroke=color, "fill-color"=fill, "stroke-opacity"=alpha, "fill-opacity"=alpha,...), ..., id=paste0("point_",random.string())) {
   restore.point("bb_point")
   obj = nlist(id, type="point", class, x,y,r, style, eval.fields=c("x","y","r"))
   bb_object(bb, obj)
 }
 
+#' Hide a graphic object
+#'
+#' @param bb A `bb` graphic object.
+#' @param id Identifier of the object to hide.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb <- bb_pane(xrange = c(0, 5), yrange = c(0, 5)) |>
+#'   bb_point(2, 3, id = "p")
+#' bb_hide_object(bb, "p")
+#' }
 bb_hide_object = function(bb, id) {
   bb$objs[[id]]$no.draw=TRUE
   bb
 }
 
+#' Add an object specification
+#'
+#' @param bb A `bb` graphic object.
+#' @param obj Optional list describing the object.
+#' @param ... Named properties added to `obj`.
+#' @param id A unique object identifier.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb <- bb_pane(xrange = c(0, 5), yrange = c(0, 5))
+#' bb_object(bb, list(type = "point", x = 2, y = 3), id = "p")
+#' }
 bb_object = function(bb, obj=NULL,..., id = first.non.null(obj[["id"]],random.string())) {
   args = list(...)
   if (is.null(obj)) obj = list()
@@ -191,7 +350,20 @@ bb_object = function(bb, obj=NULL,..., id = first.non.null(obj[["id"]],random.st
 
 }
 
-#' Set the current data set
+#' Set the current data row and values
+#'
+#' This helper updates the `bb` object available in the calling evaluation
+#' context.
+#'
+#' @param values Named values used to evaluate graphic expressions.
+#' @param data Data frame associated with the graphic.
+#' @param data.row Row of `data` used as the current observation.
+#' @return The updated `bb` object.
+#' @examples
+#' \dontrun{
+#' bb <- bb_pane(data = data.frame(x = 1:2, y = 3:4))
+#' bb_set_data(data = bb$data, data.row = 2)
+#' }
 bb_set_data = function(values = if (!is.null(data)) as.list(data[data.row,,drop=FALSE]) else list(),data = bb$data,data.row = first.non.null(bb$data.row,1)) {
   bb$data = data
   bb$data.row = data.row
@@ -199,11 +371,30 @@ bb_set_data = function(values = if (!is.null(data)) as.list(data[data.row,,drop=
   bb
 }
 
+#' Attach data to a graphic
+#'
+#' @param bb A `bb` graphic object.
+#' @param data A data frame or similar object.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane() |> bb_data(data.frame(x = 1:3, y = 3:1))
+#' }
 bb_data = function(bb, data) {
   bb$data = data
   bb
 }
 
+#' Define computed graphic variables
+#'
+#' @param bb A `bb` graphic object.
+#' @param ... Named expressions defining variables.
+#' @param id A unique object identifier.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(0, 5), yrange = c(0, 5)) |> bb_var(a = 2)
+#' }
 bb_var = function(bb, ..., id=paste0("var_", random.string())) {
   restore.point("bb_var")
   obj = list(id=id,type="var", var=list(...), no.draw=TRUE)
@@ -215,6 +406,13 @@ cur.bb = function() {
   ..bb..env$bb
 }
 
+#' Default CSS for blackboard-style SVG graphics
+#'
+#' @return A character string containing CSS rules.
+#' @examples
+#' \dontrun{
+#' css <- bb_svg_css()
+#' }
 bb_svg_css = function() {
 '
 .axis-main {

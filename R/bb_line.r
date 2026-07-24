@@ -1,4 +1,25 @@
 
+#' Add a tangent line
+#'
+#' @param bb A `bb` graphic object.
+#' @param x,y Coordinates of the tangency point.
+#' @param slope The tangent slope.
+#' @param width Total line width, or a two-element vector of widths on either
+#'   side of the tangency point.
+#' @param alpha Stroke opacity.
+#' @param color Stroke color.
+#' @param class SVG class name.
+#' @param linetype Line type.
+#' @param to Optional identifier of a curve from which missing tangent
+#'   quantities are computed.
+#' @param ... Additional arguments passed to [bb_segment()].
+#' @param id A unique object identifier.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(0, 4), yrange = c(0, 4)) |>
+#'   bb_tangent(x = 2, y = 2, slope = 1)
+#' }
 bb_tangent = function(bb, x=NULL,y=NULL, slope=NULL, width=NULL, alpha=NULL,color=NULL, class="segment",linetype="solid", to=NULL, ..., id=paste0("tangent_",random.string())) {
   if (is.null(width)) {
     width = 2*(diff(bb$xrange)+diff(bb$yrange))
@@ -23,14 +44,62 @@ bb_tangent = function(bb, x=NULL,y=NULL, slope=NULL, width=NULL, alpha=NULL,colo
   bb_segment(bb,x1=x1,x2=x2,y1=y1,y2=y2,alpha=alpha,color=color, class="segment",linetype=linetype,...)
 }
 
+#' Add a horizontal line
+#'
+#' @param bb A `bb` graphic object.
+#' @param y Vertical coordinate.
+#' @param alpha Stroke opacity.
+#' @param color Stroke color.
+#' @param class SVG class name.
+#' @param linetype Line type.
+#' @param lwd Stroke width.
+#' @param style A list of SVG style properties.
+#' @param ... Additional SVG style properties.
+#' @param id A unique object identifier.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(0, 4), yrange = c(0, 4)) |> bb_hline(y = 2)
+#' }
 bb_hline = function(bb,y,alpha=NULL,color=NULL, class="segment",linetype="solid", lwd=NULL,  style=list(stroke=color, "stroke-opacity"=alpha, "stroke-width"=lwd,...), ..., id=paste0("hline_",random.string())) {
   bb_segment(bb,y=y, x1=bb$x.min, x2=bb$x.max, color=color, class=class, alpha=alpha, lwd=lwd, linetype=linetype, style=style, id=id)
 }
 
+#' Add a vertical line
+#'
+#' @inheritParams bb_hline
+#' @param x Horizontal coordinate.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(0, 4), yrange = c(0, 4)) |> bb_vline(x = 2)
+#' }
 bb_vline = function(bb,x,alpha=NULL,color=NULL, class="segment",linetype="solid", lwd=NULL,  style=list(stroke=color, "stroke-opacity"=alpha, "stroke-width"=lwd,...), ..., id=paste0("hline_",random.string())) {
   bb_segment(bb,x=x, y1=bb$y.min, y2=bb$y.max, color=color, class=class, alpha=alpha, lwd=lwd, linetype=linetype, style=style, id=id)
 }
 
+#' Add a line segment
+#'
+#' @param bb A `bb` graphic object.
+#' @param x1,y1 Coordinates of the first endpoint.
+#' @param x2,y2 Coordinates of the second endpoint.
+#' @param x,y Convenience coordinates used by the endpoint defaults.
+#' @param alpha Stroke opacity.
+#' @param color Stroke color.
+#' @param class SVG class name.
+#' @param linetype Line type.
+#' @param lwd Stroke width.
+#' @param dasharray SVG stroke-dasharray value.
+#' @param style A list of SVG style properties.
+#' @param ... Additional SVG style properties.
+#' @param tooltip Optional tooltip text.
+#' @param id A unique object identifier.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(0, 4), yrange = c(0, 4)) |>
+#'   bb_segment(x1 = 1, y1 = 1, x2 = 3, y2 = 3)
+#' }
 bb_segment = function(bb, x1=x,x2=x1,y1=y,y2=y1,x,y, alpha=NULL,color=NULL, class="segment",linetype="solid", lwd=NULL, dasharray = linetype.to.dasharry(linetype),  style=list(stroke=color, "stroke-opacity"=alpha, "stroke-width"=lwd,...), ..., tooltip=NULL, id=paste0("segment_",random.string())) {
   restore.point("bb_segment")
 
@@ -53,6 +122,25 @@ bb_segment = function(bb, x1=x,x2=x1,y1=y,y2=y1,x,y, alpha=NULL,color=NULL, clas
 
 
 
+#' Add an arrow
+#'
+#' @param bb A `bb` graphic object.
+#' @param x1,y1 Coordinates of the first endpoint.
+#' @param x2,y2 Coordinates of the second endpoint.
+#' @param x,y Convenience coordinates used by the endpoint defaults.
+#' @param arrow.head Which endpoint receives an arrow head.
+#' @param alpha Stroke opacity.
+#' @param color Stroke color.
+#' @param class SVG class name.
+#' @param style A list of SVG style properties.
+#' @param ... Additional SVG style properties.
+#' @param id A unique object identifier.
+#' @return The modified `bb` object.
+#' @examples
+#' \dontrun{
+#' bb_pane(xrange = c(0, 4), yrange = c(0, 4)) |>
+#'   bb_arrow(x1 = 1, y1 = 1, x2 = 3, y2 = 3)
+#' }
 bb_arrow = function(bb, x1=x,x2=x1,y1=y,y2=y1,x, y, arrow.head=c("end"), alpha=NULL,color=NULL, class="arrow", style=list(stroke=color, "stroke-opacity"=alpha,...), ..., id=random.string()) {
   obj = nlist(id, type="arrow", class, x1,y1,x2,y2, style, eval.fields=c("x1","y1","x2", "y2"))
   bb_object(bb, obj)

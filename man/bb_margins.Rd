@@ -2,10 +2,27 @@
 % Please edit documentation in R/bb.r
 \name{bb_margins}
 \alias{bb_margins}
-\title{Specify margins in pixels for bb object}
+\title{Specify graphic margins}
 \usage{
 bb_margins(bb, bottom = NULL, left = NULL, top = NULL, right = NULL, ...)
 }
+\arguments{
+\item{bb}{A `bb` graphic object.}
+
+\item{bottom, left, top, right}{Margins in pixels. `NULL` preserves the current
+value.}
+
+\item{...}{Reserved for additional margin settings.}
+}
+\value{
+The modified `bb` object.
+}
 \description{
-Specify margins in pixels for bb object
+Specify graphic margins
+}
+\examples{
+\dontrun{
+bb_pane(xrange = c(0, 5), yrange = c(0, 5)) |>
+  bb_margins(left = 60, bottom = 50)
+}
 }

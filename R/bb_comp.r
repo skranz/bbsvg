@@ -1,4 +1,14 @@
 
+#' Compute all objects in a graphic
+#'
+#' @param bb A `bb` graphic object.
+#' @return The `bb` object with computed geometry.
+#' @examples
+#' \dontrun{
+#' bb <- bb_pane(xrange = c(0, 1), yrange = c(0, 1)) |>
+#'   bb_point(0.5, 0.5)
+#' bb_compute_objs(bb)
+#' }
 bb_compute_objs = function(bb) {
   restore.point("bb_compute_objs")
   # later object may use computations from earlier ones
@@ -8,6 +18,18 @@ bb_compute_objs = function(bb) {
   bb
 }
 
+#' Compute one object in a graphic
+#'
+#' @param bb A `bb` graphic object.
+#' @param obj An object specification from `bb$objs`.
+#' @param i The object's position in `bb$objs`.
+#' @return The `bb` object with the selected geometry computed.
+#' @examples
+#' \dontrun{
+#' bb <- bb_pane(xrange = c(0, 1), yrange = c(0, 1)) |>
+#'   bb_point(0.5, 0.5)
+#' bb_compute_obj(bb, bb$objs[[1]], 1)
+#' }
 bb_compute_obj = function(bb,obj,i) {
   restore.point("bb_compute_obj")
   ..bb..env$bb=bb

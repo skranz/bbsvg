@@ -2,7 +2,7 @@
 % Please edit documentation in R/bb.r
 \name{bb_set_data}
 \alias{bb_set_data}
-\title{Set the current data set}
+\title{Set the current data row and values}
 \usage{
 bb_set_data(
   values = if (!is.null(data)) as.list(data[data.row, , drop = FALSE]) else list(),
@@ -10,6 +10,23 @@ bb_set_data(
   data.row = first.non.null(bb$data.row, 1)
 )
 }
+\arguments{
+\item{values}{Named values used to evaluate graphic expressions.}
+
+\item{data}{Data frame associated with the graphic.}
+
+\item{data.row}{Row of `data` used as the current observation.}
+}
+\value{
+The updated `bb` object.
+}
 \description{
-Set the current data set
+This helper updates the `bb` object available in the calling evaluation
+context.
+}
+\examples{
+\dontrun{
+bb <- bb_pane(data = data.frame(x = 1:2, y = 3:4))
+bb_set_data(data = bb$data, data.row = 2)
+}
 }

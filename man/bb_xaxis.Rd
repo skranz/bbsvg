@@ -21,8 +21,39 @@ bb_xaxis(
 )
 }
 \arguments{
-\item{y}{position of the axis. Either "bottom" (default) or "top" or a number}
+\item{bb}{A `bb` graphic object.}
+
+\item{label}{Plain-text axis label.}
+
+\item{latex}{Optional LaTeX axis label.}
+
+\item{labelpos}{Label position: `"bottom"`, `"right"`, or `"center"`.}
+
+\item{show.ticks}{Whether to draw ticks and tick labels.}
+
+\item{arrow.axis}{Whether to draw an arrow-headed axis.}
+
+\item{defaults}{Graphic defaults used to resolve axis settings.}
+
+\item{y.offset, x.offset}{Label offsets in pixels.}
+
+\item{y}{Axis position: `"bottom"`, `"top"`, or a numeric coordinate.}
+
+\item{align}{Label alignment.}
+
+\item{num.ticks}{Desired number of automatically generated ticks.}
+
+\item{ticks}{Optional explicit tick coordinates.}
+}
+\value{
+The modified `bb` object.
 }
 \description{
 Specify the x-axis
+}
+\examples{
+\dontrun{
+bb_pane(xrange = c(0, 5), yrange = c(0, 5)) |>
+  bb_xaxis(label = "Quantity")
+}
 }
