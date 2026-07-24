@@ -9,4 +9,3 @@ geom.curves.intersections(geom1, geom2, grid.length = 201)
 \description{
 Find the intersections of two curves, which are characterized by their xy values
 }
-

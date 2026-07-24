@@ -10,4 +10,3 @@ geom.to.geom.pos(new, old, check = c("above", "below", "left", "right"))
 If the geoms intersect non of the attributes holds true, i.e.
 the geom new must be stricly above old
 }
-

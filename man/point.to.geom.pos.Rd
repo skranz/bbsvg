@@ -4,10 +4,13 @@
 \alias{point.to.geom.pos}
 \title{Find relative position (above, below, left, right) of a point to a geom}
 \usage{
-point.to.geom.pos(xy, geom, check = c("above", "below", "left", "right",
-  "on"), tol.on = 0.01)
+point.to.geom.pos(
+  xy,
+  geom,
+  check = c("above", "below", "left", "right", "on"),
+  tol.on = 0.01
+)
 }
 \description{
 Find relative position (above, below, left, right) of a point to a geom
 }
-

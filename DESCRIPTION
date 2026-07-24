@@ -17,4 +17,4 @@ Depends:
     digest
 Sugests:
   rsvg
-RoxygenNote: 5.0.0
+RoxygenNote: 7.3.3
