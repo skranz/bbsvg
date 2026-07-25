@@ -212,14 +212,24 @@ draw.svg.label = function(svg,obj, display.whisker=FALSE,bb=NULL) {
 svg_text = function(svg, x,y, text,id=NULL, class="boxed-label",style=c(nlist("font-size"=font_size), extra.style), font_size=NULL, extra.style=list(), level=1, tooltip=NULL, to.range=TRUE, math.label=TRUE,...) {
   restore.point("svg_text")
 
+  rp = domain.to.range(x=x,y=y,svg=svg, to.range=to.range)
+
   text = sep.lines(text)
-  if (length(text)>1) {
-    text = multiline.tspans(text,x = x,y=y)
-  } else if (math.label){
-    text = latex.to.textspan(text)
+  
+  if (math.label) {
+    text = sapply(text, latex.to.textspan, USE.NAMES = FALSE)
   }
 
-  rp = domain.to.range(x=x,y=y,svg=svg, to.range=to.range)
+  if (length(text)>1) {
+    if (is.null(font_size)) {
+      text = multiline.tspans(text, x = rp$x, y = rp$y)
+    } else {
+      text = multiline.tspans(text, x = rp$x, y = rp$y, font_size = font_size)
+    }
+  } else {
+    text = text[1]
+  }
+
   el = svg_tag("text", nlist(x=rp$x,y=rp$y,id,class,style,...), tooltip=tooltip, inner=text)
   #el = svg_tag("text", nlist(x=rp$x,y=rp$y,id,style,...), tooltip=tooltip, inner=text)
   svg_add(svg,el,id,level=level)
